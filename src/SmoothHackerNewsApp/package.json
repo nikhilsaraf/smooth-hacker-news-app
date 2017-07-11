@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "flow-bin": "^0.40.0",
     "react-native-scripts": "0.0.40",
     "jest-expo": "~18.0.0",
     "react-test-renderer": "16.0.0-alpha.12"
@@ -13,7 +14,8 @@
     "eject": "react-native-scripts eject",
     "android": "react-native-scripts android",
     "ios": "react-native-scripts ios",
-    "test": "node node_modules/jest/bin/jest.js --watch"
+    "test": "node node_modules/jest/bin/jest.js --watch",
+    "flow": "node_modules/.bin/flow"
   },
   "jest": {
     "preset": "jest-expo"
@@ -21,6 +23,12 @@
   "dependencies": {
     "expo": "^18.0.3",
     "react": "16.0.0-alpha.12",
-    "react-native": "^0.45.1"
+    "react-native": "^0.45.1",
+    "immutable": "^3.8.1",
+    "react-native-elements": "^0.11.2",
+    "react-redux": "^5.0.5",
+    "redux": "^3.6.0",
+    "redux-persist": "^4.8.0",
+    "redux-persist-transform-immutable": "^4.3.0"
   }
 }
