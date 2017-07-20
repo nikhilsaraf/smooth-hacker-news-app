@@ -6,6 +6,7 @@ import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import Article from './components/Article';
 import ReaderView from './components/ReaderView';
+import DataProvider from './data/DataProvider';
 
 class App extends React.Component {
   static navigationOptions = {
@@ -14,7 +15,10 @@ class App extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    return <ReaderView navigate = { navigate }/>;
+    return <ReaderView
+    	dataProvider = {new DataProvider()}
+    	navigate = { navigate }
+    	/>;
   }
 }
 

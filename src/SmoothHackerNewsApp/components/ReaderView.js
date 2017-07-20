@@ -6,7 +6,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ScrollView } from 'react-native';
 import { Cell, TableView } from 'react-native-tableview-simple';
-import RowMetadata from '../data/RowMetadata';
 
 class ReaderView extends React.Component {
   _openWebView(title, url) {
@@ -38,10 +37,7 @@ class ReaderView extends React.Component {
   }
 
   render() {
-    const data = [
-      new RowMetadata('Alibaba Cloud', '', 'https://www.alibabacloud.com/'),
-      new RowMetadata('Google', '', 'https://google.com/')
-    ];
+    const data = this.props.dataProvider.fetchData();
     const rows = this._generateRows(data);
     return (
       <ScrollView>
@@ -54,7 +50,8 @@ class ReaderView extends React.Component {
 }
 
 ReaderView.propTypes = {
-  navigate: PropTypes.func.isRequired
+  navigate: PropTypes.func.isRequired,
+  dataProvider: PropTypes.object.isRequired
 };
 
 export default ReaderView;
