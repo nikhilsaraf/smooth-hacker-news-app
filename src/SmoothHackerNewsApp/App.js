@@ -4,22 +4,53 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
-import Cell from './components/Cell';
 import Article from './components/Article';
+import { Cell, TableView } from 'react-native-tableview-simple';
+import RowMetadata from './data/RowMetadata';
 
 class RootView extends React.Component {
-  render() {
+  _openWebView(title, url) {
+    console.log('opening web view for url: ' + url);
+    this.props.navigate('Article', {
+      title: title,
+      url: url
+    });
+  }
+
+  _makeRow(i, rowMetadata) {
     return (
-      <View style={styles.container}>
-        <Cell
-          title = 'Alibaba Cloud'
-          subtitle = ''
-          url = 'https://www.alibabacloud.com/'
-          navigate = { this.props.navigate }
-          />
-      </View>
+      <Cell
+        key = {i}
+        cellStyle="Basic"
+        title={rowMetadata.title()}
+        subtitle={rowMetadata.subtitle()}
+        onPress={() => this._openWebView(rowMetadata.title(), rowMetadata.url())}
+      />
+    );
+  }
+
+  _generateRows(data) {
+    rows = [];
+    for (var i = 0; i < data.length; i++) {
+      rows.push(this._makeRow(i, data[i]));
+    }
+    return rows;
+  }
+
+  render() {
+    const data = [
+      new RowMetadata('Alibaba Cloud', '', 'https://www.alibabacloud.com/'),
+      new RowMetadata('Google', '', 'https://google.com/')
+    ];
+    const rows = this._generateRows(data);
+    return (
+      <ScrollView>
+        <TableView>
+          {rows}
+        </TableView>
+      </ScrollView>
     );
   }
 }
