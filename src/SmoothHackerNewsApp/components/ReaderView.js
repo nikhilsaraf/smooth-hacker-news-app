@@ -4,7 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, ScrollView } from 'react-native';
+import { ActivityIndicator, ScrollView } from 'react-native';
 import { Cell, TableView } from 'react-native-tableview-simple';
 
 class ReaderView extends React.Component {
@@ -54,11 +54,9 @@ class ReaderView extends React.Component {
 
   render() {
     if (!this.state.rowMetadataList) {
-      return (
-        <View>
-          <Text>Loading Data</Text>
-        </View>
-      );
+      return (<ActivityIndicator
+        size="large"
+        style={{ flex: 1 }} />);
     }
 
     const rows = this._generateRows(this.state.rowMetadataList);
