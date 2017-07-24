@@ -24,6 +24,7 @@ class ReaderView extends React.Component {
   }
 
   _makeRow(i, rowMetadata) {
+    const bgColor = i % 2 == 0 ? '#effaff' : '#f7f7f7';
     return (
       <Cell
         key = {i}
@@ -31,6 +32,7 @@ class ReaderView extends React.Component {
         title={rowMetadata.title()}
         subtitle={rowMetadata.subtitle()}
         onPress={() => this._openWebView(rowMetadata.title(), rowMetadata.url())}
+        backgroundColor={bgColor}
       />
     );
   }
