@@ -4,100 +4,57 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, ActivityIndicator, ScrollView } from 'react-native';
+import { ActivityIndicator, ScrollView } from 'react-native';
 import { Cell, TableView } from 'react-native-tableview-simple';
 
 class ReaderView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      rowMetadataList: null
-    };
+    this.state = { dataList: null };
   }
 
-  _openWebView(title, url) {
-    console.log('opening web view for url: ' + url);
-    this.props.navigate('Article', {
-      title: title,
-      url: url
-    });
-  }
-
-  _makeRow(i, rowMetadata) {
+  _makeRow(i, data) {
     const bgColor = i % 2 == 0 ? '#effaff' : '#f7f7f7';
+    const cellContentView = this.props.cellContentViewFactory({
+      navigate: this.props.navigate,
+      data: data
+    });
+
     return (
       <Cell
         key = {i}
-        cellContentView={
-          <View style={{ paddingTop: 10, paddingBottom: 10, flex: 200, flexDirection: 'column' }}>
-
-            <View style={{ flex: 100, paddingBottom: 5, flexDirection: 'row' }}>
-              <Text
-                style={{ flex: 1, fontSize: 18, alignItems: 'flex-start' }}
-                allowFontScaling
-                numberOfLines={1}
-                >
-                {rowMetadata.title()}
-              </Text>
-              <Text
-                style={{ fontSize: 12, paddingTop: 4, alignItems: 'flex-end' }}
-                allowFontScaling
-                numberOfLines={1}
-                >
-                {"by " + rowMetadata.user()}
-              </Text>
-            </View>
-
-            <View style={{ flex: 100, flexDirection: 'row' }}>
-              <Text
-                style={{ flex: 1, fontSize: 12, alignItems: 'flex-start' }}
-                allowFontScaling
-                numberOfLines={1}
-                >
-                {rowMetadata.numComments() + " comments"}
-              </Text>
-              <Text
-                style={{ fontSize: 12, alignItems: 'flex-end' }}
-                allowFontScaling
-                numberOfLines={1}
-                >
-                {rowMetadata.score() + " points"}
-              </Text>
-            </View>
-
-          </View>
-        }
-        onPress={() => this._openWebView(rowMetadata.title(), rowMetadata.url())}
+        cellContentView={ cellContentView }
+        onPress={ () => this.props.cellOnPressFn(this.props.navigate, data) }
         backgroundColor={bgColor}
       />
     );
   }
 
-  _generateRows(data) {
+  _generateRows(dataList) {
     rows = [];
-    for (let i = 0; i < data.length; i++) {
-      rows.push(this._makeRow(i, data[i]));
+    for (let i = 0; i < dataList.length; i++) {
+      rows.push(this._makeRow(i, dataList[i]));
     }
     return rows;
   }
 
   componentDidMount() {
     // make network request to load data, which will set state
-    this.props.dataProvider.fetchData((rowMetadataList) => {
+    this.props.dataProviderFn((dataList) => {
       this.setState({
-        rowMetadataList: rowMetadataList
+        dataList: dataList
       });
     });
   }
 
   render() {
-    if (!this.state.rowMetadataList) {
+    if (!this.state.dataList) {
       return (<ActivityIndicator
         size="large"
         style={{ flex: 1 }} />);
     }
 
-    const rows = this._generateRows(this.state.rowMetadataList);
+    const rows = this._generateRows(this.state.dataList);
     return (
       <ScrollView>
         <TableView>
@@ -110,7 +67,9 @@ class ReaderView extends React.Component {
 
 ReaderView.propTypes = {
   navigate: PropTypes.func.isRequired,
-  dataProvider: PropTypes.object.isRequired
+  dataProviderFn: PropTypes.func.isRequired,
+  cellContentViewFactory: PropTypes.func.isRequired,
+  cellOnPressFn: PropTypes.func.isRequired
 };
 
 export default ReaderView;
