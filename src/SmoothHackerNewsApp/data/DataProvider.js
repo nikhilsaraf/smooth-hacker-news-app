@@ -36,7 +36,12 @@ export default class DataProvider {
 
 					// transform itemResponse
 					const itemBody = JSON.parse(itemResponse['_bodyInit']);
-					const itemRowMetadata = new RowMetadata(itemBody['title'], itemBody['by'], itemBody['url']);
+					const itemRowMetadata = new RowMetadata(
+						itemBody['title'],
+						itemBody['by'],
+						itemBody['url'],
+						itemBody['score'],
+						itemBody['descendants']);
 
 					// set item and update counter
 					storyObjects[i] = itemRowMetadata;
