@@ -15,8 +15,9 @@ class App extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
+    const topStoriesProvider = new DataProvider('https://hacker-news.firebaseio.com/v0/topstories.json');
     return <ReaderView
-    	dataProvider = {new DataProvider()}
+    	dataProvider = { topStoriesProvider }
     	navigate = { navigate }
     	/>;
   }

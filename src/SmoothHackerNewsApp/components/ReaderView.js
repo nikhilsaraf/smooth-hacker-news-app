@@ -4,10 +4,17 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ScrollView } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import { Cell, TableView } from 'react-native-tableview-simple';
 
 class ReaderView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      rowMetadataList: null
+    };
+  }
+
   _openWebView(title, url) {
     console.log('opening web view for url: ' + url);
     this.props.navigate('Article', {
@@ -30,15 +37,31 @@ class ReaderView extends React.Component {
 
   _generateRows(data) {
     rows = [];
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       rows.push(this._makeRow(i, data[i]));
     }
     return rows;
   }
 
+  componentDidMount() {
+    // make network request to load data, which will set state
+    this.props.dataProvider.fetchData((rowMetadataList) => {
+      this.setState({
+        rowMetadataList: rowMetadataList
+      });
+    });
+  }
+
   render() {
-    const data = this.props.dataProvider.fetchData();
-    const rows = this._generateRows(data);
+    if (!this.state.rowMetadataList) {
+      return (
+        <View>
+          <Text>Loading Data</Text>
+        </View>
+      );
+    }
+
+    const rows = this._generateRows(this.state.rowMetadataList);
     return (
       <ScrollView>
         <TableView>
