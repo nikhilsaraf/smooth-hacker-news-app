@@ -9,6 +9,7 @@ import CommentsView from './components/CommentsView';
 import ReaderView from './components/ReaderView';
 import StoryCell from './components/StoryCell';
 import CommentCell from './components/CommentCell';
+import ItemDataProvider from './data/ItemDataProvider';
 import DataProvider from './data/DummyDataProvider';
 import CommentDataProvider from './data/DummyCommentDataProvider';
 
@@ -44,8 +45,9 @@ class App extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const topStoriesProvider = new DataProvider('https://hacker-news.firebaseio.com/v0/topstories.json');
-    const commentsDataProvider = new CommentDataProvider();
+    const itemDataProvider = new ItemDataProvider('https://hacker-news.firebaseio.com/v0/item/', '.json');
+    const topStoriesProvider = new DataProvider('https://hacker-news.firebaseio.com/v0/topstories.json', itemDataProvider);
+    const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell
       {...props}
       openCommentsFn = { this._openComments.bind(this, commentsDataProvider) }
@@ -53,7 +55,7 @@ class App extends React.Component {
 
     return (<ReaderView
       navigate = { navigate }
-      dataProviderFn = { topStoriesProvider.fetchData }
+      dataProviderFn = { topStoriesProvider.fetchData.bind(topStoriesProvider) }
       cellContentViewFactory = { cellContentViewFactory }
       cellOnPressFn = {this._openWebView}
     	/>);
