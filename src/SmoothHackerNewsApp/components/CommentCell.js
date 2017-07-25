@@ -11,14 +11,6 @@ import { View, Text, TouchableOpacity } from 'react-native';
  		super(props);
  	}
 
- 	_extractCommentIds(comments) {
- 		const ids = [];
- 		for (let i = 0; i < comments.length; i++) {
- 			ids.push(comments[i].id());
- 		}
- 		return ids;
- 	}
-
  	render() {
  		const commentMetadata = this.props.data;
  		return (
@@ -44,9 +36,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 	            <View style={{ flex: 100, flexDirection: 'row' }}>
 	              <TouchableOpacity
 	                style={{ flex: 1, alignItems: 'flex-start' }}
-	                // TODO if we already have the commend data here then maybe it can be made simpler, rather than having to extract the commentIds and re-fetch all the time
-	                // this way only the StoryCell will perform a network call and the CommentCell will use cached data
-	                onPress={() => this.props.openCommentsFn(this.props.navigate, this._extractCommentIds(commentMetadata.children()))}
+	                onPress={() => this.props.openCommentsFn(this.props.navigate, commentMetadata.children())}
 	                >
 	                <Text
 	                  style={{ fontSize: 12 }}

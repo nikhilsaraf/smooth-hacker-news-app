@@ -8,12 +8,10 @@ export default class DummyCommentDataProvider {
 	constructor() {
 		this.state = {
 			comments: [
-				new CommentMetadata(100, 'userA', 'blue is the best color', [
-					new CommentMetadata(102, 'userB', 'no, I think that red is the best color', [
-						new CommentMetadata(103, 'userC', 'both of you are incorrect, it is actually Green that is the best color', [])
-						]),
-					new CommentMetadata(104, 'userD', 'no, green is the best!', [])
-					]),
+				new CommentMetadata(100, 'userA', 'blue is the best color', [102, 104]),
+				new CommentMetadata(102, 'userB', 'no, I think that red is the best color', [103]),
+				new CommentMetadata(103, 'userC', 'both of you are incorrect, it is actually Green that is the best color', []),
+				new CommentMetadata(104, 'userD', 'no, green is the best!', []),
 				new CommentMetadata(101, 'userB', 'i think that red is the best color', [])
 			]
 		}

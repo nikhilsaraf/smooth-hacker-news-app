@@ -28,7 +28,7 @@ class App extends React.Component {
       navigate: navigate,
       dataProviderFn: commentsDataProvider.fetchData.bind(commentsDataProvider, commentIds),
       cellContentViewFactory: cellContentViewFactory,
-      cellOnPressFn: this._openComments.bind(this, commentsDataProvider)
+      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, navigate, comment.children()))
     });
   }
 
