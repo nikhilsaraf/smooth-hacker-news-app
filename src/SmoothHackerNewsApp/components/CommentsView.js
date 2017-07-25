@@ -15,8 +15,6 @@ class CommentsView extends React.Component {
 
     render() {
         const { params } = this.props.navigation.state;
-        console.log('comments view renderings with props: ' + JSON.stringify(params));
-
     	// TODO need to add JSX for current comment - this should be a ReaderView + a floating parent comment
         return (<ReaderView
             navigate = { params.navigate }
