@@ -20,7 +20,6 @@ import { View, Text, TouchableOpacity } from 'react-native';
 	              <Text
 	                style={{ flex: 1, fontSize: 18, alignItems: 'flex-start' }}
 	                allowFontScaling
-	                numberOfLines={1}
 	                >
 	                {commentMetadata.text()}
 	              </Text>
