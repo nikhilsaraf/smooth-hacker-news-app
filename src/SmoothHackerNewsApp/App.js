@@ -19,6 +19,11 @@ class App extends React.Component {
   };
 
   _openComments(commentsDataProvider, navigate, commentIds) {
+    // we don't want to open any comments if there is nothing to show (0 comments case)
+    if (commentIds.length == 0) {
+      return;
+    }
+    
     console.log('opening comments for commentIds: ' + JSON.stringify(commentIds));
     const cellContentViewFactory = (props) => <CommentCell
       {...props}
