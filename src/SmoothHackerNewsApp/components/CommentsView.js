@@ -8,9 +8,7 @@ import ReaderView from './ReaderView';
 
 class CommentsView extends React.Component {
     static navigationOptions = ({ navigation }) => ({
-        // TODO put some title here
-        title: 'temp put some title here'
-        // title: `${navigation.state.params.title}`,
+        title: `${navigation.state.params.title}`,
     });
 
     render() {

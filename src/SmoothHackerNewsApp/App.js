@@ -18,7 +18,7 @@ class App extends React.Component {
     title: 'Smooth Hacker News App',
   };
 
-  _openComments(commentsDataProvider, navigate, commentIds) {
+  _openComments(commentsDataProvider, depth, navigate, commentIds) {
     // we don't want to open any comments if there is nothing to show (0 comments case)
     if (commentIds.length == 0) {
       return;
@@ -27,13 +27,14 @@ class App extends React.Component {
     console.log('opening comments for commentIds: ' + JSON.stringify(commentIds));
     const cellContentViewFactory = (props) => <CommentCell
       {...props}
-      openCommentsFn = { this._openComments.bind(this, commentsDataProvider) }
+      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, depth + 1) }
       />;
     navigate('Comments', {
+      title: 'Comment Depth = ' + depth,
       navigate: navigate,
       dataProviderFn: commentsDataProvider.fetchData.bind(commentsDataProvider, commentIds),
       cellContentViewFactory: cellContentViewFactory,
-      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, navigate, comment.children()))
+      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, depth + 1, navigate, comment.children()))
     });
   }
 
@@ -55,7 +56,7 @@ class App extends React.Component {
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell
       {...props}
-      openCommentsFn = { this._openComments.bind(this, commentsDataProvider) }
+      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, 1) }
       />;
 
     return (<ReaderView
