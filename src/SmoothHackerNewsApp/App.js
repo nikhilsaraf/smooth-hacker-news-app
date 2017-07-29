@@ -4,11 +4,11 @@
 
 import React from 'react';
 import { StackNavigator } from 'react-navigation';
-import Article from './components/Article';
-import CommentsView from './components/CommentsView';
-import ReaderView from './components/ReaderView';
-import StoryCell from './components/StoryCell';
-import CommentCell from './components/CommentCell';
+import Article from './components/view/Article';
+import CommentsView from './components/view/CommentsView';
+import ReaderView from './components/view/ReaderView';
+import StoryCell from './components/cell/StoryCell';
+import CommentCell from './components/cell/CommentCell';
 import ItemDataProvider from './data/ItemDataProvider';
 import DataProvider from './data/DummyDataProvider';
 import CommentDataProvider from './data/DummyCommentDataProvider';
