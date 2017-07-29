@@ -2,9 +2,9 @@
  * @flow
  */
 
-import RowMetadata from './RowMetadata';
+import RowMetadata from '../model/RowMetadata';
 
-export default class DataProvider {
+export default class StoryDataProvider {
 	constructor(url, itemDataProvider) {
 		this._url = url;
 		this._itemDataProvider = itemDataProvider;

@@ -2,9 +2,9 @@
  * @flow
  */
 
-import CommentMetadata from './CommentMetadata';
+import CommentMetadata from '../model/CommentMetadata';
 
-export default class DataProvider {
+export default class CommentDataProvider {
 	constructor(itemDataProvider) {
 		this._itemDataProvider = itemDataProvider;
 	}

@@ -2,7 +2,7 @@
  * @flow
  */
 
-import CommentMetadata from './CommentMetadata';
+import CommentMetadata from '../model/CommentMetadata';
 
 const dummyComments = [
 	new CommentMetadata(100, 'userA', 'blue is the best color', [102, 104]),
@@ -12,7 +12,7 @@ const dummyComments = [
 	new CommentMetadata(101, 'userB', 'i think that red is the best color', [])
 ];
 
-export default class DummyCommentDataProvider {
+export default class CommentDataProvider {
 	fetchData(commentIds, callbackFn) {
 		// collect the comments that have ids in commentIds into the searchResult
 		const searchResult = [];

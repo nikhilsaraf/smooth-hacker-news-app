@@ -2,9 +2,9 @@
  * @flow
  */
 
-import RowMetadata from './RowMetadata';
+import RowMetadata from '../model/RowMetadata';
 
-export default class DummyDataProvider {
+export default class StoryDataProvider {
 	fetchData(callbackFn) {
 		callbackFn([
 			new RowMetadata(0, 'Title 1 - Google', 'user1', 'http://google.com', 23, [100, 101]),

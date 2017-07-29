@@ -9,9 +9,9 @@ import CommentsView from './components/view/CommentsView';
 import ReaderView from './components/view/ReaderView';
 import StoryCell from './components/cell/StoryCell';
 import CommentCell from './components/cell/CommentCell';
-import ItemDataProvider from './data/ItemDataProvider';
-import DataProvider from './data/DummyDataProvider';
-import CommentDataProvider from './data/DummyCommentDataProvider';
+import ItemDataProvider from './data/provider/ItemDataProvider';
+import StoryDataProvider from './data/dummyprovider/StoryDataProvider';
+import CommentDataProvider from './data/dummyprovider/CommentDataProvider';
 
 class App extends React.Component {
   static navigationOptions = {
@@ -52,7 +52,7 @@ class App extends React.Component {
   render() {
     const { navigate } = this.props.navigation;
     const itemDataProvider = new ItemDataProvider('https://hacker-news.firebaseio.com/v0/item/', '.json');
-    const topStoriesProvider = new DataProvider('https://hacker-news.firebaseio.com/v0/topstories.json', itemDataProvider);
+    const topStoriesProvider = new StoryDataProvider('https://hacker-news.firebaseio.com/v0/topstories.json', itemDataProvider);
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell
       {...props}
