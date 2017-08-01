@@ -18,7 +18,7 @@ class App extends React.Component {
     title: 'Smooth Hacker News App',
   };
 
-  _openComments(commentsDataProvider, depth, navigate, commentIds) {
+  _openComments(commentsDataProvider, depth, data, navigate, commentIds) {
     // we don't want to open any comments if there is nothing to show (0 comments case)
     if (commentIds.length == 0) {
       return;
@@ -27,14 +27,31 @@ class App extends React.Component {
     console.log('opening comments for commentIds: ' + JSON.stringify(commentIds));
     const cellContentViewFactory = (props) => <CommentCell
       {...props}
-      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, depth + 1) }
+      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, depth + 1, props.data) }
       />;
+
+    let firstCellView;
+    if (depth == 1) {
+      firstCellView = (<StoryCell
+        navigate = {navigate}
+        data = {data}
+        openCommentsFn = { () => {} }
+        />);
+    } else {
+      firstCellView = (<CommentCell
+        navigate = {navigate}
+        data = {data}
+        openCommentsFn = { () => {} }
+        />);
+    }
+
     navigate('Comments', {
       title: 'Comment Depth = ' + depth,
       navigate: navigate,
+      firstCellView: firstCellView,
       dataProviderFn: commentsDataProvider.fetchData.bind(commentsDataProvider, commentIds),
       cellContentViewFactory: cellContentViewFactory,
-      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, depth + 1, navigate, comment.children()))
+      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, depth + 1, comment, navigate, comment.children()))
     });
   }
 
@@ -56,7 +73,7 @@ class App extends React.Component {
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell
       {...props}
-      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, 1) }
+      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, 1, props.data) }
       />;
 
     return (<ReaderView
