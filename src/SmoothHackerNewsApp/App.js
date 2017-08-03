@@ -35,6 +35,7 @@ class App extends React.Component {
       firstCellView = (<StoryCell
         navigate = {navigate}
         data = {data}
+        cellOnPressFn = { () => this._openWebView(navigate, data) }
         openCommentsFn = { () => {} }
         />);
     } else {

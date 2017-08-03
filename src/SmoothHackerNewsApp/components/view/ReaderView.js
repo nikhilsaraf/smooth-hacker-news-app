@@ -14,17 +14,19 @@ class ReaderView extends React.Component {
   }
 
   _makeRow(i, data) {
+    const cellOnPressFn = (() => this.props.cellOnPressFn(this.props.navigate, data));
     const bgColor = i % 2 == 0 ? '#effaff' : '#f7f7f7';
     const cellContentView = this.props.cellContentViewFactory({
       navigate: this.props.navigate,
-      data: data
+      data: data,
+      cellOnPressFn: cellOnPressFn
     });
 
     return (
       <Cell
         key = {i}
         cellContentView={ cellContentView }
-        onPress={ () => this.props.cellOnPressFn(this.props.navigate, data) }
+        onPress={ cellOnPressFn }
         backgroundColor={bgColor}
       />
     );

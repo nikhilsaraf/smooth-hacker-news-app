@@ -17,13 +17,18 @@ import { View, Text, TouchableOpacity } from 'react-native';
 	 		<View style={{ paddingTop: 10, paddingBottom: 10, flex: 200, flexDirection: 'column' }}>
 
 	            <View style={{ flex: 100, paddingBottom: 5, flexDirection: 'row' }}>
-	              <Text
-	                style={{ flex: 1, fontSize: 18, alignItems: 'flex-start' }}
-	                allowFontScaling
-	                numberOfLines={1}
+            	  <TouchableOpacity
+	                style={{ flex: 1, alignItems: 'flex-start' }}
+	                onPress={ this.props.cellOnPressFn }
 	                >
-	                {rowMetadata.title()}
-	              </Text>
+		              <Text
+		                style={{ fontSize: 18 }}
+		                allowFontScaling
+		                numberOfLines={1}
+		                >
+		                {rowMetadata.title()}
+		              </Text>
+	              </TouchableOpacity>
 	              <Text
 	                style={{ fontSize: 12, paddingTop: 4, alignItems: 'flex-end' }}
 	                allowFontScaling
@@ -63,6 +68,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 StoryCell.propTypes = {
 	navigate: PropTypes.func.isRequired,
 	data: PropTypes.object.isRequired,
+	cellOnPressFn: PropTypes.func.isRequired,
 	openCommentsFn: PropTypes.func.isRequired
 };
 
