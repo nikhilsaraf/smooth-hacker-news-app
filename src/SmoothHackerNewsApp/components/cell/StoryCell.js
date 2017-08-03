@@ -12,7 +12,22 @@ import { View, Text, TouchableOpacity } from 'react-native';
  	}
 
  	render() {
- 		const rowMetadata = this.props.data;
+        const rowMetadata = this.props.data;
+ 		const commentsText =
+ 			(<Text
+ 				style={{ fontSize: 12 }}
+                allowFontScaling
+                numberOfLines={1}
+                >
+                {rowMetadata.comments().length + " comments"}
+            </Text>);
+ 		const touchableComments =
+ 			(<TouchableOpacity
+                onPress={() => this.props.openCommentsFn(this.props.navigate, rowMetadata.comments())}
+                >
+                {commentsText}
+            </TouchableOpacity>);
+        const comments = this.props.openCommentsFn ? touchableComments : commentsText;
  		return (
 	 		<View style={{ paddingTop: 10, paddingBottom: 10, flex: 200, flexDirection: 'column' }}>
 
@@ -39,18 +54,9 @@ import { View, Text, TouchableOpacity } from 'react-native';
 	            </View>
 
 	            <View style={{ flex: 100, flexDirection: 'row' }}>
-	              <TouchableOpacity
-	                style={{ flex: 1, alignItems: 'flex-start' }}
-	                onPress={() => this.props.openCommentsFn(this.props.navigate, rowMetadata.comments())}
-	                >
-	                <Text
-	                  style={{ fontSize: 12 }}
-	                  allowFontScaling
-	                  numberOfLines={1}
-	                  >
-	                  {rowMetadata.comments().length + " comments"}
-	                </Text>
-	              </TouchableOpacity>
+	              <View style={{ flex: 1, alignItems: 'flex-start' }}>
+	              {comments}
+	              </View>
 	              <Text
 	                style={{ fontSize: 12, alignItems: 'flex-end' }}
 	                allowFontScaling
@@ -69,7 +75,7 @@ StoryCell.propTypes = {
 	navigate: PropTypes.func.isRequired,
 	data: PropTypes.object.isRequired,
 	cellOnPressFn: PropTypes.func.isRequired,
-	openCommentsFn: PropTypes.func.isRequired
+	openCommentsFn: PropTypes.func
 };
 
 export default StoryCell;

@@ -25,10 +25,7 @@ class App extends React.Component {
     }
     
     console.log('opening comments for commentIds: ' + JSON.stringify(commentIds));
-    const cellContentViewFactory = (props) => <CommentCell
-      {...props}
-      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, depth + 1, props.data) }
-      />;
+    const cellContentViewFactory = (props) => <CommentCell {...props} />;
 
     let firstCellView;
     if (depth == 1) {
@@ -36,13 +33,11 @@ class App extends React.Component {
         navigate = {navigate}
         data = {data}
         cellOnPressFn = { () => this._openWebView(navigate, data) }
-        openCommentsFn = { () => {} }
         />);
     } else {
       firstCellView = (<CommentCell
         navigate = {navigate}
         data = {data}
-        openCommentsFn = { () => {} }
         />);
     }
 

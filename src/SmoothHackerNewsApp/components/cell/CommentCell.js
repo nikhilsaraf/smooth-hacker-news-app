@@ -33,18 +33,13 @@ import { View, Text, TouchableOpacity } from 'react-native';
 	            </View>
 
 	            <View style={{ flex: 100, flexDirection: 'row' }}>
-	              <TouchableOpacity
-	                style={{ flex: 1, alignItems: 'flex-start' }}
-	                onPress={() => this.props.openCommentsFn(this.props.navigate, commentMetadata.children())}
-	                >
-	                <Text
-	                  style={{ fontSize: 12 }}
-	                  allowFontScaling
-	                  numberOfLines={1}
-	                  >
-	                  {commentMetadata.children().length + " replies"}
-	                </Text>
-	              </TouchableOpacity>
+		            <Text
+			 			style={{ fontSize: 12 }}
+			 			allowFontScaling
+			 			numberOfLines={1}
+			 			>
+			 			{commentMetadata.children().length + " replies"}
+					</Text>
 	            </View>
 
 	          </View>
@@ -54,8 +49,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 
 CommentCell.propTypes = {
 	navigate: PropTypes.func.isRequired,
-	data: PropTypes.object.isRequired,
-	openCommentsFn: PropTypes.func.isRequired
+	data: PropTypes.object.isRequired
 };
 
 export default CommentCell;
