@@ -17,7 +17,7 @@ class CommentsView extends React.Component {
         return (
             <View style={{ flex: 1, flexDirection: 'column' }}>
                 <View style={{
-                    flex: .14,
+                    flex: 0.15,
                     backgroundColor: '#d8e3ff',
                     paddingLeft: 10,
                     paddingRight: 10,
@@ -25,17 +25,13 @@ class CommentsView extends React.Component {
                 }}>
                 {params.firstCellView}
                 </View>
-                <View style={{ flex: .86, flexDirection: 'row' }}>
-                    <View style={{ flex: .01, paddingRight: 10, backgroundColor: "#fff" }}/>
-                    <View style={{ flex: .99, backgroundColor: "#fff" }}>
-                        <ReaderView
-                            navigate = { params.navigate }
-                            dataProviderFn = { params.dataProviderFn }
-                            cellContentViewFactory = { params.cellContentViewFactory }
-                            cellOnPressFn = { params.cellOnPressFn }
-                            />
-                    </View>
-                </View>
+                <ReaderView
+                    style={{ alignItems: 'flex-end' }}
+                    navigate = { params.navigate }
+                    dataProviderFn = { params.dataProviderFn }
+                    cellContentViewFactory = { params.cellContentViewFactory }
+                    cellOnPressFn = { params.cellOnPressFn }
+                />
             </View>
         );
     }
