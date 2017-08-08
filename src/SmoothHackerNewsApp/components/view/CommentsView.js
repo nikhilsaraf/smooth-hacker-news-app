@@ -17,7 +17,7 @@ class CommentsView extends React.Component {
         return (
             <View style={{ flex: 1, flexDirection: 'column' }}>
                 <View style={{
-                    flex: 0.15,
+                    flex: params.firstCellHeight,
                     backgroundColor: '#d8e3ff',
                     paddingLeft: 10,
                     paddingRight: 10,

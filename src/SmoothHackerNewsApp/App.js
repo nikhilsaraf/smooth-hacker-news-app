@@ -3,6 +3,7 @@
  */
 
 import React from 'react';
+import { ScrollView } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Article from './components/view/Article';
 import CommentsView from './components/view/CommentsView';
@@ -28,22 +29,26 @@ class App extends React.Component {
     const cellContentViewFactory = (props) => <CommentCell {...props} />;
 
     let firstCellView;
+    let firstCellHeight;
     if (depth == 1) {
+      firstCellHeight = 0.15;
       firstCellView = (<StoryCell
         navigate = {navigate}
         data = {data}
         cellOnPressFn = { () => this._openWebView(navigate, data) }
         />);
     } else {
-      firstCellView = (<CommentCell
-        navigate = {navigate}
-        data = {data}
-        />);
+      firstCellHeight = 0.25;
+      firstCellView = 
+        (<ScrollView>
+          <CommentCell navigate = {navigate} data = {data}/>
+        </ScrollView>);
     }
 
     navigate('Comments', {
       title: 'Comment Depth = ' + depth,
       navigate: navigate,
+      firstCellHeight: firstCellHeight,
       firstCellView: firstCellView,
       dataProviderFn: commentsDataProvider.fetchData.bind(commentsDataProvider, commentIds),
       cellContentViewFactory: cellContentViewFactory,

@@ -5,6 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity } from 'react-native';
+import HtmlView from 'react-native-htmlview';
 
  class CommentCell extends React.Component {
  	constructor(props) {
@@ -14,18 +15,21 @@ import { View, Text, TouchableOpacity } from 'react-native';
  	render() {
  		const commentMetadata = this.props.data;
  		return (
-	 		<View style={{ paddingTop: 10, paddingBottom: 10, flex: 1, flexDirection: 'column' }}>
+	 		<View style={{ paddingTop: 10, paddingBottom: 10, flexDirection: 'column' }}>
 
-	            <View style={{ flex: .5, paddingBottom: 5, flexDirection: 'row' }}>
-	              <Text
-	                style={{ flex: 1, fontSize: 12, alignItems: 'flex-start' }}
-	                allowFontScaling
-	              >
-	              {commentMetadata.text()}
-	              </Text>
+	            <View style={{ paddingBottom: 5, flexDirection: 'row' }}>
+	              <HtmlView
+	              	value = {commentMetadata.text()}
+	              	onLinkPress = {
+	              	    (url) => this.props.navigate('Article', {
+	              	        title: url,
+	              	        url: url
+	              	    })
+	              	}
+              	  />
 	            </View>
 
-	            <View style={{ flex: 1, flexDirection: 'row' }}>
+	            <View style={{ flexDirection: 'row' }}>
 		          <Text
 		              style={{ flex: 1, fontSize: 10, alignItems: 'flex-start' }}
 		              allowFontScaling
