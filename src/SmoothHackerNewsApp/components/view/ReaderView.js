@@ -6,6 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, ScrollView } from 'react-native';
 import { Cell, TableView } from 'react-native-tableview-simple';
+import PullToRefresh from 'react-native-pull-to-refresh';
 
 class ReaderView extends React.Component {
   constructor(props) {
@@ -41,12 +42,21 @@ class ReaderView extends React.Component {
   }
 
   componentDidMount() {
+    this._loadData(() => {});
+  }
+
+  _loadData(onFinishLoading) {
     // make network request to load data, which will set state
     this.props.dataProviderFn((dataList) => {
       this.setState({
         dataList: dataList
       });
+      onFinishLoading();
     });
+  }
+
+  _onRefresh() {
+    return new Promise(this._loadData.bind(this));
   }
 
   render() {
@@ -58,11 +68,16 @@ class ReaderView extends React.Component {
 
     const rows = this._generateRows(this.state.dataList);
     return (
-      <ScrollView>
-        <TableView>
-          {rows}
-        </TableView>
-      </ScrollView>
+      <PullToRefresh
+        onRefresh={this._onRefresh.bind(this)}
+        offset = {50}
+        >
+        <ScrollView>
+          <TableView>
+            {rows}
+          </TableView>
+        </ScrollView>
+      </PullToRefresh>
     );
   }
 }
