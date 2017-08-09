@@ -16,7 +16,8 @@ import CommentDataProvider from './data/dummyprovider/CommentDataProvider';
 
 class App extends React.Component {
   static navigationOptions = {
-    title: 'Smooth Hacker News App',
+    title: 'Smooth Hacker News',
+    headerTitleStyle: { fontSize: 14 }
   };
 
   _openComments(commentsDataProvider, depth, data, navigate, commentIds) {

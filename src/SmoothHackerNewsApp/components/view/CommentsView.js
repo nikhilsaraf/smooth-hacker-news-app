@@ -10,6 +10,7 @@ import { View } from 'react-native';
 class CommentsView extends React.Component {
     static navigationOptions = ({ navigation }) => ({
         title: `${navigation.state.params.title}`,
+        headerTitleStyle: { fontSize: 14 }
     });
 
     render() {

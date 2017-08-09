@@ -8,6 +8,7 @@ import { WebView } from 'react-native';
 class Article extends React.Component {
 	static navigationOptions = ({ navigation }) => ({
 		title: `${navigation.state.params.title}`,
+		headerTitleStyle: { fontSize: 14 }
 	});
 
 	render() {
