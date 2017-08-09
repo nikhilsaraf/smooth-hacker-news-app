@@ -5,7 +5,6 @@
 export default class ItemDataProvider {
 	constructor(staticUrlPrefix, staticUrlSuffix) {
 		this._staticUrlPrefix = staticUrlPrefix;
-		this._staticUrlSuffix = staticUrlSuffix;
 	}
 
 	fetchData(itemIds, callbackFn) {
@@ -18,7 +17,7 @@ export default class ItemDataProvider {
 		let numCallsFinished = 0;
 		for (let i = 0; i < itemIds.length; i++) {
 			const itemId = itemIds[i];
-			const itemUrl = this._staticUrlPrefix + itemId + this._staticUrlSuffix;
+			const itemUrl = this._staticUrlPrefix + itemId;
 
 			fetch(itemUrl)
 				.then((response) => response.json())

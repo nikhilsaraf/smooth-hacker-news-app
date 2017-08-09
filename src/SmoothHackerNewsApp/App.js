@@ -70,8 +70,8 @@ class App extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const itemDataProvider = new ItemDataProvider('https://hacker-news.firebaseio.com/v0/item/', '.json');
-    const topStoriesProvider = new StoryDataProvider('https://hacker-news.firebaseio.com/v0/topstories.json', itemDataProvider);
+    const topStoriesProvider = new StoryDataProvider('http://node-hnapi.herokuapp.com/news?page=1');
+    const itemDataProvider = new ItemDataProvider('http://node-hnapi.herokuapp.com/item/');
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell
       {...props}
