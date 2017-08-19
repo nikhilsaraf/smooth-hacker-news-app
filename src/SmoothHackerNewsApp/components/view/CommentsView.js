@@ -28,6 +28,7 @@ class CommentsView extends React.Component {
                 </View>
                 <ReaderView
                     style={{ alignItems: 'flex-end' }}
+                    canRefresh = { false }
                     navigate = { params.navigate }
                     dataProviderFn = { params.dataProviderFn }
                     cellContentViewFactory = { params.cellContentViewFactory }

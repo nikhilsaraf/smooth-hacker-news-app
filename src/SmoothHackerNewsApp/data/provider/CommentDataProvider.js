@@ -9,21 +9,29 @@ export default class CommentDataProvider {
 		this._itemDataProvider = itemDataProvider;
 	}
 
-	fetchData(commentIds, callbackFn) {
-		this._itemDataProvider.fetchData(commentIds, (itemObjects) => {
-			// transform itemObjects
-			const items = [];
-			for (let i = 0; i < itemObjects.length; i++) {
-				const item = itemObjects[i];
-				items.push(new CommentMetadata(
-					item['id'],
-					item['by'],
-					item['text'],
-					item['kids'] ? item['kids'] : []));
-			}
+	_transformComments(comments) {
+		if (!comments) {
+			return null;
+		}
 
+		const commentItems = [];
+		for (let i = 0; i < comments.length; i++) {
+			const comment = comments[i];
+			commentItems.push(new CommentMetadata(
+				comment['id'],
+				comment['user'],
+				comment['content'],
+				this._transformComments(comment['comments'])));
+		}
+		return commentItems;
+	}
+
+	fetchData(parentId, callbackFn) {
+		this._itemDataProvider.fetchData([parentId], (itemObjects) => {
+			const comments = itemObjects[0]['comments'];
+			const transformedComments = this._transformComments(comments);
 			// finally call the callback here
-			callbackFn(items);
+			callbackFn(transformedComments);
 		});
 	}
 }

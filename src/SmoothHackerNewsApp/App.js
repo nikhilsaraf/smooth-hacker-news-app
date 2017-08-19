@@ -11,8 +11,8 @@ import ReaderView from './components/view/ReaderView';
 import StoryCell from './components/cell/StoryCell';
 import CommentCell from './components/cell/CommentCell';
 import ItemDataProvider from './data/provider/ItemDataProvider';
-import StoryDataProvider from './data/dummyprovider/StoryDataProvider';
-import CommentDataProvider from './data/dummyprovider/CommentDataProvider';
+import StoryDataProvider from './data/provider/StoryDataProvider';
+import CommentDataProvider from './data/provider/CommentDataProvider';
 
 class App extends React.Component {
   static navigationOptions = {
@@ -20,17 +20,16 @@ class App extends React.Component {
     headerTitleStyle: { fontSize: 14 }
   };
 
-  _openComments(commentsDataProvider, depth, data, navigate, commentIds) {
+  _openComments(commentsDataProvider, depth, data, navigate, commentCount) {
     // we don't want to open any comments if there is nothing to show (0 comments case)
-    if (commentIds.length == 0) {
+    if (commentCount == 0) {
       return;
     }
     
-    console.log('opening comments for commentIds: ' + JSON.stringify(commentIds));
     const cellContentViewFactory = (props) => <CommentCell {...props} />;
-
     let firstCellView;
     let firstCellHeight;
+    let dataProviderFn;
     if (depth == 1) {
       firstCellHeight = 0.15;
       firstCellView = (<StoryCell
@@ -38,12 +37,14 @@ class App extends React.Component {
         data = {data}
         cellOnPressFn = { () => this._openWebView(navigate, data) }
         />);
+      dataProviderFn = commentsDataProvider.fetchData.bind(commentsDataProvider, data.id());
     } else {
       firstCellHeight = 0.25;
       firstCellView = 
         (<ScrollView>
           <CommentCell navigate = {navigate} data = {data}/>
         </ScrollView>);
+      dataProviderFn = (callbackFn) => callbackFn(data.children());
     }
 
     navigate('Comments', {
@@ -51,9 +52,9 @@ class App extends React.Component {
       navigate: navigate,
       firstCellHeight: firstCellHeight,
       firstCellView: firstCellView,
-      dataProviderFn: commentsDataProvider.fetchData.bind(commentsDataProvider, commentIds),
+      dataProviderFn: dataProviderFn,
       cellContentViewFactory: cellContentViewFactory,
-      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, depth + 1, comment, navigate, comment.children()))
+      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, depth + 1, comment, navigate, comment.children().length))
     });
   }
 
@@ -70,8 +71,8 @@ class App extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const itemDataProvider = new ItemDataProvider('https://hacker-news.firebaseio.com/v0/item/', '.json');
-    const topStoriesProvider = new StoryDataProvider('https://hacker-news.firebaseio.com/v0/topstories.json', itemDataProvider);
+    const topStoriesProvider = new StoryDataProvider('http://node-hnapi.herokuapp.com/news?page=1');
+    const itemDataProvider = new ItemDataProvider('http://node-hnapi.herokuapp.com/item/');
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell
       {...props}
@@ -79,6 +80,7 @@ class App extends React.Component {
       />;
 
     return (<ReaderView
+      canRefresh = { true }
       navigate = { navigate }
       dataProviderFn = { topStoriesProvider.fetchData.bind(topStoriesProvider) }
       cellContentViewFactory = { cellContentViewFactory }

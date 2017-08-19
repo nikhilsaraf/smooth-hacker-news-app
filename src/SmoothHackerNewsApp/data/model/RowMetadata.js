@@ -3,13 +3,13 @@
  */
 
 export default class RowMetadata {
-	constructor(id, title, user, url, score, comments) {
+	constructor(id, title, user, url, score, commentCount) {
 		this._id = id;
 		this._title = title;
 		this._user = user;
 		this._url = url;
 		this._score = score;
-		this._comments = comments;
+		this._commentCount = commentCount;
 	}
 
 	id() {
@@ -32,7 +32,7 @@ export default class RowMetadata {
 		return this._score;
 	}
 
-	comments() {
-		return this._comments;
+	commentCount() {
+		return this._commentCount;
 	}
 }
