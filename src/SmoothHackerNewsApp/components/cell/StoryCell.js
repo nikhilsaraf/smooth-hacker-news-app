@@ -12,18 +12,18 @@ import { View, Text, TouchableOpacity } from 'react-native';
  	}
 
  	render() {
-        const rowMetadata = this.props.data;
- 		const commentsText =
+    const rowMetadata = this.props.data;
+    const commentsText =
  			(<Text
  				style={{ fontSize: 10 }}
                 allowFontScaling
                 numberOfLines={1}
                 >
-                {rowMetadata.comments().length + " comments"}
+                {rowMetadata.commentCount() + " comments"}
             </Text>);
  		const touchableComments =
  			(<TouchableOpacity
-                onPress={() => this.props.openCommentsFn(this.props.navigate, rowMetadata.comments())}
+                onPress={() => this.props.openCommentsFn(this.props.navigate, rowMetadata.commentCount())}
                 >
                 {commentsText}
             </TouchableOpacity>);
