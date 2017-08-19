@@ -66,23 +66,29 @@ class ReaderView extends React.Component {
         style={{ flex: 1 }} />);
     }
 
-    const rows = this._generateRows(this.state.dataList);
-    return (
-      <PullToRefresh
-        onRefresh={this._onRefresh.bind(this)}
-        offset = {50}
-        >
-        <ScrollView>
-          <TableView>
-            {rows}
-          </TableView>
-        </ScrollView>
-      </PullToRefresh>
-    );
+    const rows =
+      (<ScrollView>
+        <TableView>
+        {this._generateRows(this.state.dataList)}
+        </TableView>
+      </ScrollView>);
+
+    if (this.props.canRefresh) {
+      return (
+        <PullToRefresh
+          onRefresh={this._onRefresh.bind(this)}
+          offset = {50}
+          >
+          {rows}
+        </PullToRefresh>
+      );
+    }
+    return rows;
   }
 }
 
 ReaderView.propTypes = {
+  canRefresh: PropTypes.bool.isRequired,
   navigate: PropTypes.func.isRequired,
   dataProviderFn: PropTypes.func.isRequired,
   cellContentViewFactory: PropTypes.func.isRequired,

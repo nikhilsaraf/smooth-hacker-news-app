@@ -80,6 +80,7 @@ class App extends React.Component {
       />;
 
     return (<ReaderView
+      canRefresh = { true }
       navigate = { navigate }
       dataProviderFn = { topStoriesProvider.fetchData.bind(topStoriesProvider) }
       cellContentViewFactory = { cellContentViewFactory }
