@@ -28,7 +28,7 @@ class App extends React.Component {
     }
 
     // always mark the data as read
-    data = markReadFn(data);
+    markReadFn(data);
     
     const cellContentViewFactory = (props) => <CommentCell {...props} subscriptFontSize={subscriptFontSize} />;
     let firstCellView;
@@ -83,7 +83,7 @@ class App extends React.Component {
 
   _onStoryCellPress(commentsDataProvider, depth, markReadFn, navigate, rowMetadata) {
     // mark the item as read
-    rowMetadata = markReadFn(rowMetadata);
+    markReadFn(rowMetadata);
 
     if (rowMetadata.url().startsWith("item?")) {
       this._openComments(commentsDataProvider, depth, rowMetadata, markReadFn, navigate, rowMetadata.commentCount());
@@ -111,14 +111,6 @@ class App extends React.Component {
     }
   }
 
-  async _setValue(key, value) {
-    try {
-      await AsyncStorage.setItem(key, value);
-    } catch (error) {
-      console.log('error saving for key, value (' + key + ', ' + value + '): ' + error);
-    }
-  }
-
   _markRead(rowMetadata) {
     // short-circuit if no writing needed
     // if (rowMetadata.isRead()) {
@@ -127,9 +119,12 @@ class App extends React.Component {
     const key = this._makeSaveKey(rowMetadata.id());
     const newReadStatus = true;
 
-    // asynchronous, but we don't need the result so ignore it
-    this._setValue(key, JSON.stringify(newReadStatus));
-    return rowMetadata.withReadStatus(newReadStatus);
+    try {
+      // asynchronous; we don't need the result so ignore it
+      AsyncStorage.setItem(key, JSON.stringify(newReadStatus));
+    } catch (error) {
+      console.log('error saving for key (' + key + '): ' + error);
+    }
   }
 
   render() {
