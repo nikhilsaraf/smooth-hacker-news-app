@@ -13,10 +13,11 @@ import { View, Text, TouchableOpacity } from 'react-native';
 
  	render() {
     const rowMetadata = this.props.data;
-    const fontWeight = rowMetadata.isRead() ? 'normal' : 'bold';
+    const fontColor = rowMetadata.isRead() ? '#a3a3a3' : '#000';
+    
     const commentsText =
  			(<Text
- 				style={{ fontSize: this.props.subscriptFontSize }}
+ 				style={{ fontSize: this.props.subscriptFontSize, color: fontColor }}
                 allowFontScaling
                 numberOfLines={1}
                 >
@@ -31,7 +32,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
         const comments = this.props.openCommentsFn ? touchableComments : commentsText;
 
     const byUserComponent = rowMetadata.user() == null ? null : (<Text
-      style={{ fontSize: this.props.subscriptFontSize, paddingLeft: 4, alignItems: 'flex-end' }}
+      style={{ fontSize: this.props.subscriptFontSize, color: fontColor, paddingLeft: 4, alignItems: 'flex-end' }}
       allowFontScaling
       numberOfLines={1}
       >
@@ -46,7 +47,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
             onPress={ this.props.cellOnPressFn }
             >
             <Text
-              style={{ fontSize: this.props.textFontSize, fontWeight: fontWeight }}
+              style={{ fontSize: this.props.textFontSize, color: fontColor }}
               allowFontScaling
               >
               {rowMetadata.title()}
@@ -57,7 +58,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
         <View style={{ flexDirection: 'row' }}>
           <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
               <Text
-                style={{ fontSize: this.props.subscriptFontSize, alignItems: 'flex-start' }}
+                style={{ fontSize: this.props.subscriptFontSize, color: fontColor, alignItems: 'flex-start' }}
                 allowFontScaling
                 numberOfLines={1}
                 >
