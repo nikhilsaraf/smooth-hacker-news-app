@@ -13,6 +13,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
 
  	render() {
     const rowMetadata = this.props.data;
+    const fontWeight = rowMetadata.isRead() ? 'normal' : 'bold';
     const commentsText =
  			(<Text
  				style={{ fontSize: this.props.subscriptFontSize }}
@@ -45,7 +46,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
             onPress={ this.props.cellOnPressFn }
             >
             <Text
-              style={{ fontSize: this.props.textFontSize }}
+              style={{ fontSize: this.props.textFontSize, fontWeight: fontWeight }}
               allowFontScaling
               >
               {rowMetadata.title()}

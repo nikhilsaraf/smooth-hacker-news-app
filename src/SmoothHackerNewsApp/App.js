@@ -87,7 +87,8 @@ class App extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const storiesDataProvider = new StoryDataProvider(this.props.primaryUrl);
+    const isReadFn = ((id, callbackFn) => callbackFn(true));
+    const storiesDataProvider = new StoryDataProvider(this.props.primaryUrl, isReadFn);
     const itemDataProvider = new ItemDataProvider('http://node-hnapi.herokuapp.com/item/');
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell
