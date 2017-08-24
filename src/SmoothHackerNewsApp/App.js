@@ -36,9 +36,10 @@ class App extends React.Component {
     let dataProviderFn;
     if (depth == 1) {
       firstCellHeight = 0.15;
+      // firstCellView for comments should always look like they're unread
       firstCellView = (<StoryCell
         navigate = {navigate}
-        data = {data}
+        data = { data.withReadStatus(false) }
         textFontSize = {textFontSize}
         subscriptFontSize = {subscriptFontSize}
         cellOnPressFn = { () => this._openWebView(navigate, data) }
