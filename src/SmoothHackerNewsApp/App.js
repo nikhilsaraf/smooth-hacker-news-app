@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, AsyncStorage } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import Article from './components/view/Article';
 import CommentsView from './components/view/CommentsView';
@@ -92,14 +92,50 @@ class App extends React.Component {
     }
   }
 
+  _makeSaveKey(id) {
+    return '@nikhilsaraf/SHN:' + id;
+  }
+
+  _isRead(id, callbackFn) {
+    const key = this._makeSaveKey(id);
+    try {
+      // asynchronous so need to use a callback wrapper
+      AsyncStorage.getItem(key, (error, value) => {
+        // value is nullable so check directly for 'true'
+        callbackFn(value === 'true' ? true : false);
+      });
+    } catch (error) {
+      console.log('error retrieving save status for key (' + key + '): ' + error);
+      // invoke callback in finally block to prevent blocking on errors
+      callbackFn(false);
+    }
+  }
+
+  async _setValue(key, value) {
+    try {
+      await AsyncStorage.setItem(key, value);
+    } catch (error) {
+      console.log('error saving for key, value (' + key + ', ' + value + '): ' + error);
+    }
+  }
+
+  _markRead(rowMetadata) {
+    // short-circuit if no writing needed
+    // if (rowMetadata.isRead()) {
+    //   return rowMetadata;
+    // }
+    const key = this._makeSaveKey(rowMetadata.id());
+    const newReadStatus = true;
+
+    // asynchronous, but we don't need the result so ignore it
+    this._setValue(key, JSON.stringify(newReadStatus));
+    return rowMetadata.withReadStatus(newReadStatus);
+  }
+
   render() {
     const { navigate } = this.props.navigation;
-    const isReadFn = (id, callbackFn) => callbackFn(true);
-    const markReadFn = (rowMetadata) => {
-      console.log('marking id as read: ' + rowMetadata.id());
-      return rowMetadata;
-    };
-    const storiesDataProvider = new StoryDataProvider(this.props.primaryUrl, isReadFn);
+    const markReadFn = this._markRead.bind(this);
+    const storiesDataProvider = new StoryDataProvider(this.props.primaryUrl, this._isRead.bind(this));
     const itemDataProvider = new ItemDataProvider('http://node-hnapi.herokuapp.com/item/');
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell

@@ -13,6 +13,17 @@ export default class RowMetadata {
 		this._isRead = isRead;
 	}
 
+	withReadStatus(isRead) {
+		return new RowMetadata(
+			this.id(),
+			this.title(),
+			this.user(),
+			this.url(),
+			this.score(),
+			this.commentCount(),
+			isRead);
+	}
+
 	id() {
 		return this._id;
 	}

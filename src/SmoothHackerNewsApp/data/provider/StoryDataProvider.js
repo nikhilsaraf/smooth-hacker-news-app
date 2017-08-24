@@ -12,15 +12,7 @@ export default class StoryDataProvider {
 
 	// updates the isRead property for the items and calls the callback once only if all items are finished
 	_barrier(originalRowMetadata, items, idx, isRead, counter, callbackFn) {
-		items[idx] = new RowMetadata(
-			originalRowMetadata.id(),
-			originalRowMetadata.title(),
-			originalRowMetadata.user(),
-			originalRowMetadata.url(),
-			originalRowMetadata.score(),
-			originalRowMetadata.commentCount(),
-			isRead);
-
+		items[idx] = originalRowMetadata.withReadStatus(isRead);
 		if (counter == items.length) {
 			// finally call the callbackFn here
 			callbackFn(items);
