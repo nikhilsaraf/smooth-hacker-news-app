@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { ScrollView } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, TabNavigator } from 'react-navigation';
 import Article from './components/view/Article';
 import CommentsView from './components/view/CommentsView';
 import ReaderView from './components/view/ReaderView';
@@ -13,13 +13,9 @@ import CommentCell from './components/cell/CommentCell';
 import ItemDataProvider from './data/provider/ItemDataProvider';
 import StoryDataProvider from './data/provider/StoryDataProvider';
 import CommentDataProvider from './data/provider/CommentDataProvider';
+import { Icon } from 'react-native-elements'
 
 class App extends React.Component {
-  static navigationOptions = {
-    title: 'Smooth Hacker News',
-    headerTitleStyle: { fontSize: 14 }
-  };
-
   _openComments(commentsDataProvider, depth, data, navigate, commentCount) {
     // we don't want to open any comments if there is nothing to show (0 comments case)
     if (commentCount == 0) {
@@ -79,7 +75,7 @@ class App extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const topStoriesProvider = new StoryDataProvider('http://node-hnapi.herokuapp.com/news?page=1');
+    const topStoriesProvider = new StoryDataProvider(this.props.primaryUrl);
     const itemDataProvider = new ItemDataProvider('http://node-hnapi.herokuapp.com/item/');
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell
@@ -97,8 +93,78 @@ class App extends React.Component {
   }
 }
 
+const tabNavigator = TabNavigator({
+  Ask: {
+    screen: ((props) => <App
+      navigation = {props.navigation}
+      primaryUrl = "http://node-hnapi.herokuapp.com/ask?page=1"
+      />),
+    navigationOptions: {
+      tabBarLabel: 'Ask',
+      title: "Ask Hacker News",
+      headerTitleStyle: { fontSize: 14 },
+      tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="question" color={tintColor} />)
+    }
+  },
+  Show: {
+    screen: ((props) => <App
+      navigation = {props.navigation}
+      primaryUrl = "http://node-hnapi.herokuapp.com/show?page=1"
+      />),
+    navigationOptions: {
+      tabBarLabel: 'Show',
+      title: "Show Hacker News",
+      headerTitleStyle: { fontSize: 14 },
+      tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="rocket" color={tintColor} />)
+    }
+  },
+  Top: {
+    screen: ((props) => <App
+      navigation = {props.navigation}
+      primaryUrl = "http://node-hnapi.herokuapp.com/news?page=1"
+      />),
+    navigationOptions: {
+      tabBarLabel: 'Top',
+      title: "Smooth Hacker News",
+      headerTitleStyle: { fontSize: 14 },
+      tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="newspaper-o" color={tintColor} />)
+    }
+  },
+  New: {
+    screen: ((props) => <App
+      navigation = {props.navigation}
+      primaryUrl = "http://node-hnapi.herokuapp.com/newest?page=1"
+      />),
+    navigationOptions: {
+      tabBarLabel: 'New',
+      title: "New Hacker News",
+      headerTitleStyle: { fontSize: 14 },
+      tabBarIcon: (({ tintColor }) => <Icon type="foundation" name="burst-new" color={tintColor} />)
+    }
+  },
+  Jobs: {
+    screen: ((props) => <App
+      navigation = {props.navigation}
+      primaryUrl = "http://node-hnapi.herokuapp.com/jobs?page=1"
+      />),
+    navigationOptions: {
+      tabBarLabel: 'Jobs',
+      title: "Hacker News Jobs",
+      headerTitleStyle: { fontSize: 14 },
+      tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="briefcase" color={tintColor} />)
+    }
+  }
+}, {
+  initialRouteName: "Top",
+  tabBarOptions: {
+    activeTintColor: '#000',
+    inactiveTintColor: '#c1c1c1',
+    labelStyle: { fontSize: 10 }
+  }
+});
+
 export default StackNavigator({
-  Home: { screen: App },
+  Home: { screen: tabNavigator },
   Article: { screen: Article },
   Comments: { screen: CommentsView }
 });
