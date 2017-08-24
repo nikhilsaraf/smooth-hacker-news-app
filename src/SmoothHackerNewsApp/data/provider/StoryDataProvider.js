@@ -22,8 +22,8 @@ export default class StoryDataProvider {
 						item['title'],
 						item['user'],
 						item['url'],
-						item['points'],
-						item['comments_count'] ? item['comments_count'] : []));
+						item['points'] ? item['points'] : 0,
+						item['comments_count'] ? item['comments_count'] : 0));
 				}
 				
 				// finally call the callback here

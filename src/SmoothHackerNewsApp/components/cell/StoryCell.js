@@ -28,6 +28,15 @@ import { View, Text, TouchableOpacity } from 'react-native';
                 {commentsText}
             </TouchableOpacity>);
         const comments = this.props.openCommentsFn ? touchableComments : commentsText;
+
+    const byUserComponent = rowMetadata.user() == null ? null : (<Text
+      style={{ fontSize: 10, paddingLeft: 4, alignItems: 'flex-end' }}
+      allowFontScaling
+      numberOfLines={1}
+      >
+      {"by " + rowMetadata.user()}
+      </Text>);
+    
  		return (
 	 		<View style={{ paddingTop: 10, paddingBottom: 10, flex: 1, flexDirection: 'column' }}>
 
@@ -53,13 +62,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
                 >
                 {rowMetadata.score() + " points"}
               </Text>
-              <Text
-                style={{ fontSize: 10, paddingLeft: 4, alignItems: 'flex-end' }}
-                allowFontScaling
-                numberOfLines={1}
-                >
-                {"by " + rowMetadata.user()}
-              </Text>
+              { byUserComponent }
           </View>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
           {comments}
