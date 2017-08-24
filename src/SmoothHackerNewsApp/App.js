@@ -69,6 +69,14 @@ class App extends React.Component {
     });
   }
 
+  _onCellPress(commentsDataProvider, depth, navigate, data) {
+    if (data.url().startsWith("item?")) {
+      this._openComments(commentsDataProvider, depth, data, navigate, data.commentCount());
+    } else {
+      this._openWebView(navigate, data);
+    }
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     const topStoriesProvider = new StoryDataProvider('http://node-hnapi.herokuapp.com/news?page=1');
@@ -84,7 +92,7 @@ class App extends React.Component {
       navigate = { navigate }
       dataProviderFn = { topStoriesProvider.fetchData.bind(topStoriesProvider) }
       cellContentViewFactory = { cellContentViewFactory }
-      cellOnPressFn = {this._openWebView}
+      cellOnPressFn = { this._onCellPress.bind(this, commentsDataProvider, 1) }
     	/>);
   }
 }
