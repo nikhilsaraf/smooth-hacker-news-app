@@ -87,7 +87,7 @@ class App extends React.Component {
 
   render() {
     const { navigate } = this.props.navigation;
-    const topStoriesProvider = new StoryDataProvider(this.props.primaryUrl);
+    const storiesDataProvider = new StoryDataProvider(this.props.primaryUrl);
     const itemDataProvider = new ItemDataProvider('http://node-hnapi.herokuapp.com/item/');
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell
@@ -100,7 +100,7 @@ class App extends React.Component {
     return (<ReaderView
       canRefresh = { true }
       navigate = { navigate }
-      dataProviderFn = { topStoriesProvider.fetchData.bind(topStoriesProvider) }
+      dataProviderFn = { storiesDataProvider.fetchData.bind(storiesDataProvider) }
       cellContentViewFactory = { cellContentViewFactory }
       cellOnPressFn = { this._onCellPress.bind(this, commentsDataProvider, 1) }
     	/>);
