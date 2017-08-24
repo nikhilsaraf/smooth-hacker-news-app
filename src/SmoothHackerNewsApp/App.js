@@ -15,6 +15,11 @@ import StoryDataProvider from './data/provider/StoryDataProvider';
 import CommentDataProvider from './data/provider/CommentDataProvider';
 import { Icon } from 'react-native-elements'
 
+const subscriptFontSize = 12;
+const textFontSize = 16;
+const headerTitleFontSize = 14;
+const tabFontSize = 12;
+
 class App extends React.Component {
   _openComments(commentsDataProvider, depth, data, navigate, commentCount) {
     // we don't want to open any comments if there is nothing to show (0 comments case)
@@ -22,7 +27,7 @@ class App extends React.Component {
       return;
     }
     
-    const cellContentViewFactory = (props) => <CommentCell {...props} />;
+    const cellContentViewFactory = (props) => <CommentCell {...props} subscriptFontSize={subscriptFontSize} />;
     let firstCellView;
     let firstCellHeight;
     let dataProviderFn;
@@ -31,6 +36,8 @@ class App extends React.Component {
       firstCellView = (<StoryCell
         navigate = {navigate}
         data = {data}
+        textFontSize = {textFontSize}
+        subscriptFontSize = {subscriptFontSize}
         cellOnPressFn = { () => this._openWebView(navigate, data) }
         />);
       dataProviderFn = commentsDataProvider.fetchData.bind(commentsDataProvider, data.id());
@@ -38,13 +45,17 @@ class App extends React.Component {
       firstCellHeight = 0.25;
       firstCellView = 
         (<ScrollView>
-          <CommentCell navigate = {navigate} data = {data}/>
+          <CommentCell
+            navigate = {navigate}
+            data = {data}
+            subscriptFontSize = {subscriptFontSize} />
         </ScrollView>);
       dataProviderFn = (callbackFn) => callbackFn(data.children());
     }
 
     navigate('Comments', {
       title: 'Comment Depth = ' + depth,
+      headerTitleFontSize: headerTitleFontSize,
       navigate: navigate,
       firstCellHeight: firstCellHeight,
       firstCellView: firstCellView,
@@ -61,6 +72,7 @@ class App extends React.Component {
     console.log('opening web view for url: ' + url);
     navigate('Article', {
       title: title,
+      headerTitleFontSize: headerTitleFontSize,
       url: url
     });
   }
@@ -80,6 +92,8 @@ class App extends React.Component {
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props) => <StoryCell
       {...props}
+      textFontSize = {textFontSize}
+      subscriptFontSize = {subscriptFontSize}
       openCommentsFn = { this._openComments.bind(this, commentsDataProvider, 1, props.data) }
       />;
 
@@ -102,7 +116,7 @@ const tabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Ask',
       title: "Ask Hacker News",
-      headerTitleStyle: { fontSize: 14 },
+      headerTitleStyle: { fontSize: headerTitleFontSize },
       tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="question" color={tintColor} />)
     }
   },
@@ -114,7 +128,7 @@ const tabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Show',
       title: "Show Hacker News",
-      headerTitleStyle: { fontSize: 14 },
+      headerTitleStyle: { fontSize: headerTitleFontSize },
       tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="rocket" color={tintColor} />)
     }
   },
@@ -126,7 +140,7 @@ const tabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Top',
       title: "Smooth Hacker News",
-      headerTitleStyle: { fontSize: 14 },
+      headerTitleStyle: { fontSize: headerTitleFontSize },
       tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="newspaper-o" color={tintColor} />)
     }
   },
@@ -138,7 +152,7 @@ const tabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'New',
       title: "New Hacker News",
-      headerTitleStyle: { fontSize: 14 },
+      headerTitleStyle: { fontSize: headerTitleFontSize },
       tabBarIcon: (({ tintColor }) => <Icon type="foundation" name="burst-new" color={tintColor} />)
     }
   },
@@ -150,7 +164,7 @@ const tabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Jobs',
       title: "Hacker News Jobs",
-      headerTitleStyle: { fontSize: 14 },
+      headerTitleStyle: { fontSize: headerTitleFontSize },
       tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="briefcase" color={tintColor} />)
     }
   }
@@ -159,7 +173,7 @@ const tabNavigator = TabNavigator({
   tabBarOptions: {
     activeTintColor: '#000',
     inactiveTintColor: '#c1c1c1',
-    labelStyle: { fontSize: 10 }
+    labelStyle: { fontSize: tabFontSize }
   }
 });
 

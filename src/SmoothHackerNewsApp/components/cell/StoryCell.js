@@ -15,7 +15,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
     const rowMetadata = this.props.data;
     const commentsText =
  			(<Text
- 				style={{ fontSize: 10 }}
+ 				style={{ fontSize: this.props.subscriptFontSize }}
                 allowFontScaling
                 numberOfLines={1}
                 >
@@ -30,7 +30,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
         const comments = this.props.openCommentsFn ? touchableComments : commentsText;
 
     const byUserComponent = rowMetadata.user() == null ? null : (<Text
-      style={{ fontSize: 10, paddingLeft: 4, alignItems: 'flex-end' }}
+      style={{ fontSize: this.props.subscriptFontSize, paddingLeft: 4, alignItems: 'flex-end' }}
       allowFontScaling
       numberOfLines={1}
       >
@@ -40,12 +40,12 @@ import { View, Text, TouchableOpacity } from 'react-native';
  		return (
 	 		<View style={{ paddingTop: 10, paddingBottom: 10, flex: 1, flexDirection: 'column' }}>
 
-        <View style={{ flex: 1, paddingBottom: 5 }}>
+        <View style={{ flex: 1, paddingBottom: 8 }}>
       	  <TouchableOpacity
             onPress={ this.props.cellOnPressFn }
             >
             <Text
-              style={{ fontSize: 14 }}
+              style={{ fontSize: this.props.textFontSize }}
               allowFontScaling
               >
               {rowMetadata.title()}
@@ -56,7 +56,7 @@ import { View, Text, TouchableOpacity } from 'react-native';
         <View style={{ flexDirection: 'row' }}>
           <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
               <Text
-                style={{ fontSize: 10, alignItems: 'flex-start' }}
+                style={{ fontSize: this.props.subscriptFontSize, alignItems: 'flex-start' }}
                 allowFontScaling
                 numberOfLines={1}
                 >
@@ -77,7 +77,9 @@ StoryCell.propTypes = {
 	navigate: PropTypes.func.isRequired,
 	data: PropTypes.object.isRequired,
 	cellOnPressFn: PropTypes.func.isRequired,
-	openCommentsFn: PropTypes.func
+  subscriptFontSize: PropTypes.number.isRequired,
+  textFontSize: PropTypes.number.isRequired,
+  openCommentsFn: PropTypes.func
 };
 
 export default StoryCell;

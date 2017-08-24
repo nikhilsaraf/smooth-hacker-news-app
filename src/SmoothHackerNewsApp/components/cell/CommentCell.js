@@ -31,14 +31,14 @@ import HtmlView from 'react-native-htmlview';
 
 	            <View style={{ flexDirection: 'row' }}>
 		          <Text
-		              style={{ flex: 1, fontSize: 10, alignItems: 'flex-start' }}
+		              style={{ flex: 1, fontSize: this.props.subscriptFontSize, alignItems: 'flex-start' }}
 		              allowFontScaling
 		              numberOfLines={1}
 	              >
 	              {"by " + commentMetadata.user()}
 	              </Text>
 	              <Text
-			 		style={{ fontSize: 10, alignItems: 'flex-end' }}
+			 		style={{ fontSize: this.props.subscriptFontSize, alignItems: 'flex-end' }}
 			 		allowFontScaling
 			 	  	numberOfLines={1}
 		 		  >
@@ -53,7 +53,8 @@ import HtmlView from 'react-native-htmlview';
 
 CommentCell.propTypes = {
 	navigate: PropTypes.func.isRequired,
-	data: PropTypes.object.isRequired
+	data: PropTypes.object.isRequired,
+	subscriptFontSize: PropTypes.number.isRequired
 };
 
 export default CommentCell;
