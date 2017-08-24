@@ -21,11 +21,14 @@ const headerTitleFontSize = 14;
 const tabFontSize = 12;
 
 class App extends React.Component {
-  _openComments(commentsDataProvider, depth, data, navigate, commentCount) {
+  _openComments(commentsDataProvider, depth, data, markReadFn, navigate, commentCount) {
     // we don't want to open any comments if there is nothing to show (0 comments case)
     if (commentCount == 0) {
       return;
     }
+
+    // always mark the data as read
+    data = markReadFn(data);
     
     const cellContentViewFactory = (props) => <CommentCell {...props} subscriptFontSize={subscriptFontSize} />;
     let firstCellView;
@@ -53,6 +56,7 @@ class App extends React.Component {
       dataProviderFn = (callbackFn) => callbackFn(data.children());
     }
 
+    const identityFn = (a) => a;
     navigate('Comments', {
       title: 'Comment Depth = ' + depth,
       headerTitleFontSize: headerTitleFontSize,
@@ -61,7 +65,7 @@ class App extends React.Component {
       firstCellView: firstCellView,
       dataProviderFn: dataProviderFn,
       cellContentViewFactory: cellContentViewFactory,
-      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, depth + 1, comment, navigate, comment.children().length))
+      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, depth + 1, comment, identityFn, navigate, comment.children().length))
     });
   }
 
@@ -77,17 +81,24 @@ class App extends React.Component {
     });
   }
 
-  _onCellPress(commentsDataProvider, depth, navigate, data) {
-    if (data.url().startsWith("item?")) {
-      this._openComments(commentsDataProvider, depth, data, navigate, data.commentCount());
+  _onStoryCellPress(commentsDataProvider, depth, markReadFn, navigate, rowMetadata) {
+    // mark the item as read
+    rowMetadata = markReadFn(rowMetadata);
+
+    if (rowMetadata.url().startsWith("item?")) {
+      this._openComments(commentsDataProvider, depth, rowMetadata, markReadFn, navigate, rowMetadata.commentCount());
     } else {
-      this._openWebView(navigate, data);
+      this._openWebView(navigate, rowMetadata);
     }
   }
 
   render() {
     const { navigate } = this.props.navigation;
-    const isReadFn = ((id, callbackFn) => callbackFn(true));
+    const isReadFn = (id, callbackFn) => callbackFn(true);
+    const markReadFn = (rowMetadata) => {
+      console.log('marking id as read: ' + rowMetadata.id());
+      return rowMetadata;
+    };
     const storiesDataProvider = new StoryDataProvider(this.props.primaryUrl, isReadFn);
     const itemDataProvider = new ItemDataProvider('http://node-hnapi.herokuapp.com/item/');
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
@@ -95,7 +106,7 @@ class App extends React.Component {
       {...props}
       textFontSize = {textFontSize}
       subscriptFontSize = {subscriptFontSize}
-      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, 1, props.data) }
+      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, 1, props.data, markReadFn) }
       />;
 
     return (<ReaderView
@@ -103,7 +114,7 @@ class App extends React.Component {
       navigate = { navigate }
       dataProviderFn = { storiesDataProvider.fetchData.bind(storiesDataProvider) }
       cellContentViewFactory = { cellContentViewFactory }
-      cellOnPressFn = { this._onCellPress.bind(this, commentsDataProvider, 1) }
+      cellOnPressFn = { this._onStoryCellPress.bind(this, commentsDataProvider, 1, markReadFn) }
     	/>);
   }
 }
