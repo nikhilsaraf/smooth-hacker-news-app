@@ -32,7 +32,7 @@ class App extends React.Component {
     let firstCellHeight;
     let dataProviderFn;
     if (depth == 1) {
-      firstCellHeight = 0.15;
+      firstCellHeight = 0.19;
       // firstCellView for comments should always look like they're unread
       firstCellView = (<StoryCell
         navigate = {navigate}
