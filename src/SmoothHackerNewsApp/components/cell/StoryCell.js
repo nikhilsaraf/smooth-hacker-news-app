@@ -39,20 +39,21 @@ import { View, Text, TouchableOpacity } from 'react-native';
       {"by " + rowMetadata.user()}
       </Text>);
     
+    const titleText =
+      (<Text style={{ fontSize: this.props.textFontSize, color: fontColor }} allowFontScaling>
+      {rowMetadata.title()}
+      </Text>);
+    const touchableTitleText =
+      (<TouchableOpacity onPress={ this.props.cellOnPressFn }>
+      {titleText}
+      </TouchableOpacity>);
+    const titleComponent = this.props.cellOnPressFn ? touchableTitleText : titleText;
+
  		return (
 	 		<View style={{ paddingTop: 10, paddingBottom: 10, flex: 1, flexDirection: 'column' }}>
 
         <View style={{ flex: 1, paddingBottom: 8 }}>
-      	  <TouchableOpacity
-            onPress={ this.props.cellOnPressFn }
-            >
-            <Text
-              style={{ fontSize: this.props.textFontSize, color: fontColor }}
-              allowFontScaling
-              >
-              {rowMetadata.title()}
-            </Text>
-          </TouchableOpacity>
+      	{titleComponent}
         </View>
 
         <View style={{ flexDirection: 'row' }}>
@@ -78,9 +79,9 @@ import { View, Text, TouchableOpacity } from 'react-native';
 StoryCell.propTypes = {
 	navigate: PropTypes.func.isRequired,
 	data: PropTypes.object.isRequired,
-	cellOnPressFn: PropTypes.func.isRequired,
   subscriptFontSize: PropTypes.number.isRequired,
   textFontSize: PropTypes.number.isRequired,
+  cellOnPressFn: PropTypes.func,
   openCommentsFn: PropTypes.func
 };
 

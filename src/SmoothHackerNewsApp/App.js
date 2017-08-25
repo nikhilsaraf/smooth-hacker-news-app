@@ -33,13 +33,14 @@ class App extends React.Component {
     let dataProviderFn;
     if (depth == 1) {
       firstCellHeight = 0.19;
+      const onTitlePressFn = this._isWebLink(data) ? this._openWebView.bind(this, navigate, data) : null;
       // firstCellView for comments should always look like they're unread
       firstCellView = (<StoryCell
         navigate = {navigate}
         data = { data.withReadStatus(false) }
         textFontSize = {textFontSize}
         subscriptFontSize = {subscriptFontSize}
-        cellOnPressFn = { () => this._openWebView(navigate, data) }
+        cellOnPressFn = { onTitlePressFn }
         />);
       dataProviderFn = commentsDataProvider.fetchData.bind(commentsDataProvider, data.id());
     } else {
@@ -78,6 +79,10 @@ class App extends React.Component {
     });
   }
 
+  _isWebLink(rowMetadata) {
+    return !rowMetadata.url().startsWith("item?");
+  }
+
   _onStoryCellPress(commentsDataProvider, depth, markReadFn, dataList, idx, updateListFn, navigate, rowMetadata) {
     // mark the item as read
     markReadFn(rowMetadata);
@@ -85,10 +90,10 @@ class App extends React.Component {
     // update the view to indicate the updated cell
     updateListFn(this._makeNewListByMarkingAsRead(dataList, idx));
 
-    if (rowMetadata.url().startsWith("item?")) {
-      this._openComments(commentsDataProvider, depth, rowMetadata, navigate, rowMetadata.commentCount());
-    } else {
+    if (this._isWebLink(rowMetadata)) {
       this._openWebView(navigate, rowMetadata);
+    } else {
+      this._openComments(commentsDataProvider, depth, rowMetadata, navigate, rowMetadata.commentCount());
     }
   }
 
