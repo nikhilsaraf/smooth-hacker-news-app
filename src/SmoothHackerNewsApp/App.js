@@ -62,7 +62,7 @@ class App extends React.Component {
       firstCellView: firstCellView,
       dataProviderFn: dataProviderFn,
       cellContentViewFactory: cellContentViewFactory,
-      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, depth + 1, comment, navigate, comment.children().length))
+      cellOnPressFn: ((_1, _2, _3, navigate, comment) => this._openComments(commentsDataProvider, depth + 1, comment, navigate, comment.children().length))
     });
   }
 
