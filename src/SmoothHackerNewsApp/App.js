@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, AsyncStorage } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import Article from './components/view/Article';
 import CommentsView from './components/view/CommentsView';
@@ -27,15 +27,16 @@ class App extends React.Component {
       return;
     }
     
-    const cellContentViewFactory = (props) => <CommentCell {...props} subscriptFontSize={subscriptFontSize} />;
+    const cellContentViewFactory = (props, _1, _2, _3) => <CommentCell {...props} subscriptFontSize={subscriptFontSize} />;
     let firstCellView;
     let firstCellHeight;
     let dataProviderFn;
     if (depth == 1) {
       firstCellHeight = 0.15;
+      // firstCellView for comments should always look like they're unread
       firstCellView = (<StoryCell
         navigate = {navigate}
-        data = {data}
+        data = { data.withReadStatus(false) }
         textFontSize = {textFontSize}
         subscriptFontSize = {subscriptFontSize}
         cellOnPressFn = { () => this._openWebView(navigate, data) }
@@ -77,24 +78,78 @@ class App extends React.Component {
     });
   }
 
-  _onCellPress(commentsDataProvider, depth, navigate, data) {
-    if (data.url().startsWith("item?")) {
-      this._openComments(commentsDataProvider, depth, data, navigate, data.commentCount());
+  _onStoryCellPress(commentsDataProvider, depth, markReadFn, dataList, idx, updateListFn, navigate, rowMetadata) {
+    // mark the item as read
+    markReadFn(rowMetadata);
+
+    // update the view to indicate the updated cell
+    updateListFn(this._makeNewListByMarkingAsRead(dataList, idx));
+
+    if (rowMetadata.url().startsWith("item?")) {
+      this._openComments(commentsDataProvider, depth, rowMetadata, navigate, rowMetadata.commentCount());
     } else {
-      this._openWebView(navigate, data);
+      this._openWebView(navigate, rowMetadata);
     }
+  }
+
+  _makeSaveKey(id) {
+    return '@nikhilsaraf/SHN:' + id;
+  }
+
+  _isRead(id, callbackFn) {
+    const key = this._makeSaveKey(id);
+    try {
+      // asynchronous so need to use a callback wrapper
+      AsyncStorage.getItem(key, (error, value) => {
+        // value is nullable so check directly for 'true'
+        callbackFn(value === 'true' ? true : false);
+      });
+    } catch (error) {
+      console.log('error retrieving save status for key (' + key + '): ' + error);
+      // invoke callback in finally block to prevent blocking on errors
+      callbackFn(false);
+    }
+  }
+
+  _markRead(rowMetadata) {
+    // short-circuit if no writing needed
+    // if (rowMetadata.isRead()) {
+    //   return rowMetadata;
+    // }
+    const key = this._makeSaveKey(rowMetadata.id());
+    const newReadStatus = true;
+
+    try {
+      // asynchronous; we don't need the result so ignore it
+      AsyncStorage.setItem(key, JSON.stringify(newReadStatus));
+    } catch (error) {
+      console.log('error saving for key (' + key + '): ' + error);
+    }
+  }
+
+  _makeNewListByMarkingAsRead(currentList, idx) {
+    const updatedDataList = currentList.slice();
+    updatedDataList[idx] = updatedDataList[idx].withReadStatus(true);
+    return updatedDataList;
   }
 
   render() {
     const { navigate } = this.props.navigation;
-    const storiesDataProvider = new StoryDataProvider(this.props.primaryUrl);
+    const markReadFn = this._markRead.bind(this);
+    const storiesDataProvider = new StoryDataProvider(this.props.primaryUrl, this._isRead.bind(this));
     const itemDataProvider = new ItemDataProvider('http://node-hnapi.herokuapp.com/item/');
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
-    const cellContentViewFactory = (props) => <StoryCell
+    const cellContentViewFactory = (props, currentList, idx, updateListFn) => <StoryCell
       {...props}
       textFontSize = {textFontSize}
       subscriptFontSize = {subscriptFontSize}
-      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, 1, props.data) }
+      openCommentsFn = {
+        (navigate, commentCount) => {
+          markReadFn(props.data);
+          updateListFn(this._makeNewListByMarkingAsRead(currentList, idx));
+          this._openComments(commentsDataProvider, 1, props.data, navigate, commentCount);
+        }
+      }
       />;
 
     return (<ReaderView
@@ -102,7 +157,7 @@ class App extends React.Component {
       navigate = { navigate }
       dataProviderFn = { storiesDataProvider.fetchData.bind(storiesDataProvider) }
       cellContentViewFactory = { cellContentViewFactory }
-      cellOnPressFn = { this._onCellPress.bind(this, commentsDataProvider, 1) }
+      cellOnPressFn = { this._onStoryCellPress.bind(this, commentsDataProvider, 1, markReadFn) }
     	/>);
   }
 }
