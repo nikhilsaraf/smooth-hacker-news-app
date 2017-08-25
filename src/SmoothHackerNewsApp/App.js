@@ -21,14 +21,11 @@ const headerTitleFontSize = 14;
 const tabFontSize = 12;
 
 class App extends React.Component {
-  _openComments(commentsDataProvider, depth, data, markReadFn, navigate, commentCount) {
+  _openComments(commentsDataProvider, depth, data, navigate, commentCount) {
     // we don't want to open any comments if there is nothing to show (0 comments case)
     if (commentCount == 0) {
       return;
     }
-
-    // always mark the data as read
-    markReadFn(data);
     
     const cellContentViewFactory = (props, _1, _2, _3) => <CommentCell {...props} subscriptFontSize={subscriptFontSize} />;
     let firstCellView;
@@ -57,7 +54,6 @@ class App extends React.Component {
       dataProviderFn = (callbackFn) => callbackFn(data.children());
     }
 
-    const identityFn = (a) => a;
     navigate('Comments', {
       title: 'Comment Depth = ' + depth,
       headerTitleFontSize: headerTitleFontSize,
@@ -66,7 +62,7 @@ class App extends React.Component {
       firstCellView: firstCellView,
       dataProviderFn: dataProviderFn,
       cellContentViewFactory: cellContentViewFactory,
-      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, depth + 1, comment, identityFn, navigate, comment.children().length))
+      cellOnPressFn: ((navigate, comment) => this._openComments(commentsDataProvider, depth + 1, comment, navigate, comment.children().length))
     });
   }
 
@@ -92,7 +88,7 @@ class App extends React.Component {
     updateListFn(updatedDataList);
 
     if (rowMetadata.url().startsWith("item?")) {
-      this._openComments(commentsDataProvider, depth, rowMetadata, markReadFn, navigate, rowMetadata.commentCount());
+      this._openComments(commentsDataProvider, depth, rowMetadata, navigate, rowMetadata.commentCount());
     } else {
       this._openWebView(navigate, rowMetadata);
     }
@@ -151,8 +147,9 @@ class App extends React.Component {
       subscriptFontSize = {subscriptFontSize}
       openCommentsFn = {
         (navigate, commentCount) => {
+          markReadFn(props.data);
           updateListFn(this._makeNewListByMarkingAsRead(currentList, idx, props.data));
-          this._openComments(commentsDataProvider, 1, props.data, markReadFn, navigate, commentCount);
+          this._openComments(commentsDataProvider, 1, props.data, navigate, commentCount);
         }
       }
       />;
