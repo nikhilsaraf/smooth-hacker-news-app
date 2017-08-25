@@ -15,13 +15,18 @@ class ReaderView extends React.Component {
   }
 
   _makeRow(i, data) {
-    const cellOnPressFn = (() => this.props.cellOnPressFn(this.props.navigate, data));
+    const updateListFn = (dataList) => {
+      this.setState({
+        dataList: dataList
+      });
+    };
+    const cellOnPressFn = (() => this.props.cellOnPressFn(this.state.dataList, i, updateListFn, this.props.navigate, data));
     const bgColor = i % 2 == 0 ? '#effaff' : '#f7f7f7';
     const cellContentView = this.props.cellContentViewFactory({
       navigate: this.props.navigate,
       data: data,
       cellOnPressFn: cellOnPressFn
-    });
+    }, this.state.dataList, i, updateListFn);
 
     return (
       <Cell

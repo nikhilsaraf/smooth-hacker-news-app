@@ -30,7 +30,7 @@ class App extends React.Component {
     // always mark the data as read
     markReadFn(data);
     
-    const cellContentViewFactory = (props) => <CommentCell {...props} subscriptFontSize={subscriptFontSize} />;
+    const cellContentViewFactory = (props, _1, _2, _3) => <CommentCell {...props} subscriptFontSize={subscriptFontSize} />;
     let firstCellView;
     let firstCellHeight;
     let dataProviderFn;
@@ -82,9 +82,14 @@ class App extends React.Component {
     });
   }
 
-  _onStoryCellPress(commentsDataProvider, depth, markReadFn, navigate, rowMetadata) {
+  _onStoryCellPress(commentsDataProvider, depth, markReadFn, dataList, idx, updateListFn, navigate, rowMetadata) {
     // mark the item as read
     markReadFn(rowMetadata);
+
+    // update the view to indicate the updated cell
+    const updatedDataList = dataList.slice();
+    updatedDataList[idx] = updatedDataList[idx].withReadStatus(true);
+    updateListFn(updatedDataList);
 
     if (rowMetadata.url().startsWith("item?")) {
       this._openComments(commentsDataProvider, depth, rowMetadata, markReadFn, navigate, rowMetadata.commentCount());
@@ -128,17 +133,28 @@ class App extends React.Component {
     }
   }
 
+  _makeNewListByMarkingAsRead(currentList, idx, rowMetadata) {
+    const updatedDataList = currentList.slice();
+    updatedDataList[idx] = updatedDataList[idx].withReadStatus(true);
+    return updatedDataList;
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     const markReadFn = this._markRead.bind(this);
     const storiesDataProvider = new StoryDataProvider(this.props.primaryUrl, this._isRead.bind(this));
     const itemDataProvider = new ItemDataProvider('http://node-hnapi.herokuapp.com/item/');
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
-    const cellContentViewFactory = (props) => <StoryCell
+    const cellContentViewFactory = (props, currentList, idx, updateListFn) => <StoryCell
       {...props}
       textFontSize = {textFontSize}
       subscriptFontSize = {subscriptFontSize}
-      openCommentsFn = { this._openComments.bind(this, commentsDataProvider, 1, props.data, markReadFn) }
+      openCommentsFn = {
+        (navigate, commentCount) => {
+          updateListFn(this._makeNewListByMarkingAsRead(currentList, idx, props.data));
+          this._openComments(commentsDataProvider, 1, props.data, markReadFn, navigate, commentCount);
+        }
+      }
       />;
 
     return (<ReaderView
