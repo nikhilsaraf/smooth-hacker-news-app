@@ -17,24 +17,23 @@ import { View, Text, TouchableOpacity } from 'react-native';
     
     const commentsText =
  			(<Text
- 				style={{ fontSize: this.props.subscriptFontSize, color: fontColor }}
-                allowFontScaling
-                numberOfLines={1}
-                >
-                {rowMetadata.commentCount() + " comments"}
-            </Text>);
+        style={{ fontSize: this.props.subscriptFontSize, color: fontColor }}
+        allowFontScaling
+        numberOfLines={1}
+      >
+      {rowMetadata.commentCount() + " comments"}
+      </Text>);
  		const touchableComments =
- 			(<TouchableOpacity
-                onPress={() => this.props.openCommentsFn(this.props.navigate, rowMetadata.commentCount())}
-                >
-                {commentsText}
-            </TouchableOpacity>);
-        const comments = this.props.openCommentsFn ? touchableComments : commentsText;
+ 			(<TouchableOpacity onPress={() => this.props.openCommentsFn(this.props.navigate, rowMetadata.commentCount())}>
+      {commentsText}
+      </TouchableOpacity>);
+    const comments = this.props.openCommentsFn ? touchableComments : commentsText;
 
-    const byUserComponent = rowMetadata.user() == null ? null : (<Text
-      style={{ fontSize: this.props.subscriptFontSize, color: fontColor, paddingLeft: 4, alignItems: 'flex-end' }}
-      allowFontScaling
-      numberOfLines={1}
+    const byUserComponent = rowMetadata.user() == null ? null :
+      (<Text
+        style={{ fontSize: this.props.subscriptFontSize, color: fontColor, paddingLeft: 4, alignItems: 'flex-end' }}
+        allowFontScaling
+        numberOfLines={1}
       >
       {"by " + rowMetadata.user()}
       </Text>);
@@ -58,14 +57,14 @@ import { View, Text, TouchableOpacity } from 'react-native';
 
         <View style={{ flexDirection: 'row' }}>
           <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
-              <Text
-                style={{ fontSize: this.props.subscriptFontSize, color: fontColor, alignItems: 'flex-start' }}
-                allowFontScaling
-                numberOfLines={1}
-                >
-                {rowMetadata.score() + " points"}
-              </Text>
-              { byUserComponent }
+            <Text
+              style={{ fontSize: this.props.subscriptFontSize, color: fontColor, alignItems: 'flex-start' }}
+              allowFontScaling
+              numberOfLines={1}
+            >
+            {rowMetadata.score() + " points"}
+            </Text>
+            { byUserComponent }
           </View>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
           {comments}
