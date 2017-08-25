@@ -83,9 +83,7 @@ class App extends React.Component {
     markReadFn(rowMetadata);
 
     // update the view to indicate the updated cell
-    const updatedDataList = dataList.slice();
-    updatedDataList[idx] = updatedDataList[idx].withReadStatus(true);
-    updateListFn(updatedDataList);
+    updateListFn(this._makeNewListByMarkingAsRead(dataList, idx));
 
     if (rowMetadata.url().startsWith("item?")) {
       this._openComments(commentsDataProvider, depth, rowMetadata, navigate, rowMetadata.commentCount());
@@ -129,7 +127,7 @@ class App extends React.Component {
     }
   }
 
-  _makeNewListByMarkingAsRead(currentList, idx, rowMetadata) {
+  _makeNewListByMarkingAsRead(currentList, idx) {
     const updatedDataList = currentList.slice();
     updatedDataList[idx] = updatedDataList[idx].withReadStatus(true);
     return updatedDataList;
@@ -148,7 +146,7 @@ class App extends React.Component {
       openCommentsFn = {
         (navigate, commentCount) => {
           markReadFn(props.data);
-          updateListFn(this._makeNewListByMarkingAsRead(currentList, idx, props.data));
+          updateListFn(this._makeNewListByMarkingAsRead(currentList, idx));
           this._openComments(commentsDataProvider, 1, props.data, navigate, commentCount);
         }
       }
