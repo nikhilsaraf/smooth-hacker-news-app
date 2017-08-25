@@ -22,6 +22,7 @@ export default class ItemDataProvider {
 			fetch(itemUrl)
 				.then((response) => response.json())
 				.then((itemBody) => {
+					// console.log(itemBody);
 					// set item and update counter
 					itemObjects[i] = itemBody;
 					numCallsFinished++;

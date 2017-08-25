@@ -36,12 +36,17 @@ export default class StoryDataProvider {
 				for (let i = 0; i < itemObjects.length; i++) {
 					const item = itemObjects[i];
 
+					// if (item['content']) {
+						// console.log(item);
+					// }
+
 					const id = item['id'];
 					const rowMetadata = new RowMetadata(
 						id,
 						item['title'],
 						item['user'],
 						item['url'],
+						item['content'],
 						item['points'] ? item['points'] : 0,
 						item['comments_count'] ? item['comments_count'] : 0,
 						null);

@@ -34,6 +34,19 @@ class App extends React.Component {
     if (depth == 1) {
       firstCellHeight = 0.19;
       const onTitlePressFn = this._isWebLink(data) ? this._openWebView.bind(this, navigate, data) : null;
+      console.log('displaying first story cell...');
+      console.log(data);
+      new ItemDataProvider('http://node-hnapi.herokuapp.com/item/').fetchData([data.id()], (itemObjects) => {
+        // 'content' data will show up here becuase we've loaded the story directly (rather than by topstories or show, etc.)
+        // need to find some way to pre-load this every time and set it on the data.
+        // one approach is to conver the data to a dataProvider so this can be asynchronous and/or we can reload it
+        // although it's wasteful to reload every one every time -- we are already loading it once in the commentsDataProvider, so...
+        // this brings me to the second (preferred) solution, to split up the data received from the commentsDataProvider into two parts,
+        // one for the parent and the other for the comments (or we can just extract the content portion of it).
+        // this will require potentially creating a wrapper around the commentsDataProvider that will route the parentData and commentsData
+        // accordingly.
+        console.log(itemObjects[0]);
+      });
       // firstCellView for comments should always look like they're unread
       firstCellView = (<StoryCell
         navigate = {navigate}
