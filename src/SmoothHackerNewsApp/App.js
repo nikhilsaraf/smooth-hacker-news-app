@@ -13,7 +13,7 @@ import CommentCell from './components/cell/CommentCell';
 import ItemDataProvider from './data/provider/ItemDataProvider';
 import StoryDataProvider from './data/provider/StoryDataProvider';
 import CommentDataProvider from './data/provider/CommentDataProvider';
-import { Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements';
 
 const subscriptFontSize = 12;
 const textFontSize = 16;
