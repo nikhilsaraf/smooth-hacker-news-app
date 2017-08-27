@@ -20,12 +20,7 @@ import HtmlView from 'react-native-htmlview';
 	            <View style={{ paddingBottom: 5, flexDirection: 'row' }}>
 	              <HtmlView
 	              	value = {commentMetadata.text()}
-	              	onLinkPress = {
-	              	    (url) => this.props.navigate('Article', {
-	              	        title: url,
-	              	        url: url
-	              	    })
-	              	}
+	              	onLinkPress = { (url) => this.props.onLinkPress(commentMetadata, url) }
               	  />
 	            </View>
 
@@ -52,9 +47,9 @@ import HtmlView from 'react-native-htmlview';
 }
 
 CommentCell.propTypes = {
-	navigate: PropTypes.func.isRequired,
 	data: PropTypes.object.isRequired,
-	subscriptFontSize: PropTypes.number.isRequired
+	subscriptFontSize: PropTypes.number.isRequired,
+	onLinkPress: PropTypes.func.isRequired
 };
 
 export default CommentCell;

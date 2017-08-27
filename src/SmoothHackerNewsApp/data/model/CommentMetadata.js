@@ -10,6 +10,16 @@ export default class CommentMetadata {
 		this._children = children;
 	}
 
+	forMetrics() {
+		return {
+			type: 'Comment',
+			id: this.id(),
+			user: this.user(),
+			text_length: this.text().length,
+			num_children: this.children().length,
+		};
+	}
+
 	id() {
 		return this._id;
 	}

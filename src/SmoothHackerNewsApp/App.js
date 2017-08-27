@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { ScrollView, AsyncStorage } from 'react-native';
+import { ScrollView, AsyncStorage, Linking } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import Article from './components/view/Article';
 import CommentsView from './components/view/CommentsView';
@@ -14,6 +14,7 @@ import ItemDataProvider from './data/provider/ItemDataProvider';
 import StoryDataProvider from './data/provider/StoryDataProvider';
 import CommentDataProvider from './data/provider/CommentDataProvider';
 import { Icon } from 'react-native-elements';
+import Metrics from './metrics/Metrics';
 
 const subscriptFontSize = 12;
 const textFontSize = 16;
@@ -21,19 +22,48 @@ const headerTitleFontSize = 14;
 const tabFontSize = 12;
 
 class App extends React.Component {
+
+  _openCommentLink(navigate, depth, idx, commentMetadata, url) {
+    this.props.metrics.track('Comment: pressed link', {
+      url: url,
+      index: idx,
+      depth: depth,
+      data: commentMetadata.forMetrics()
+    });
+
+    console.log('opening web view for url: ' + url);
+    navigate('Article', {
+      title: url,
+      headerTitleFontSize: headerTitleFontSize,
+      url: url
+    });
+  }
+
+  _onScroll(fromViewName, depth, yOffset) {
+    this.props.metrics.track('Scroll', {
+      fromView: fromViewName,
+      depth: depth,
+      yOffset: yOffset
+    });
+  }
+
   _openComments(commentsDataProvider, depth, data, navigate, commentCount) {
     // we don't want to open any comments if there is nothing to show (0 comments case)
     if (commentCount == 0) {
       return;
     }
-    
-    const cellContentViewFactory = (props, _1, _2, _3) => <CommentCell {...props} subscriptFontSize={subscriptFontSize} />;
+
+    const cellContentViewFactory = (props, _1, idx, _2) => <CommentCell
+      data = { props.data }
+      subscriptFontSize={subscriptFontSize}
+      onLinkPress = { this._openCommentLink.bind(this, navigate, depth, idx) }
+      />;
     let firstCellView;
     let firstCellHeight;
     let dataProviderFn;
     if (depth == 1) {
       firstCellHeight = 0.19;
-      const onTitlePressFn = this._isWebLink(data) ? this._openWebView.bind(this, navigate, data) : null;
+      const onTitlePressFn = this._isWebLink(data) ? this._openWebView.bind(this, 'Comments View', -1, navigate, data) : null;
       // firstCellView for comments should always look like they're unread
       firstCellView = (<StoryCell
         navigate = {navigate}
@@ -46,11 +76,15 @@ class App extends React.Component {
     } else {
       firstCellHeight = 0.25;
       firstCellView = 
-        (<ScrollView>
+        (<ScrollView
+          scrollEventThrottle = {250}
+          onScroll = { (event) => this._onScroll('Top Level Comment', depth, event.nativeEvent.contentOffset.y) }
+          >
           <CommentCell
-            navigate = {navigate}
             data = {data}
-            subscriptFontSize = {subscriptFontSize} />
+            subscriptFontSize = {subscriptFontSize}
+            onLinkPress = { this._openCommentLink.bind(this, navigate, depth, -1) }
+          />
         </ScrollView>);
       dataProviderFn = (callbackFn) => callbackFn(data.children());
     }
@@ -63,11 +97,38 @@ class App extends React.Component {
       firstCellView: firstCellView,
       dataProviderFn: dataProviderFn,
       cellContentViewFactory: cellContentViewFactory,
-      cellOnPressFn: ((_1, _2, _3, navigate, comment) => this._openComments(commentsDataProvider, depth + 1, comment, navigate, comment.children().length))
+      cellOnPressFn: ((_1, idx, _2, navigate, comment) => {
+        this.props.metrics.track('Comment: drill down', {
+          index: idx,
+          depth: depth,
+          data: comment.forMetrics()
+        });
+        this._openComments(commentsDataProvider, depth + 1, comment, navigate, comment.children().length);
+      }),
+      onPressRateApp: this._onPressRateApp.bind(this, 'Comments View', depth),
+      onLoadData: this._onLoadData.bind(this, 'Comments View', depth),
+      onScroll: this._onScroll.bind(this, 'Comments View', depth)
     });
   }
 
-  _openWebView(navigate, rowMetadata) {
+  _onPressRateApp(fromViewName, depth, listLength) {
+    this.props.metrics.track('Rate App', {
+      depth: depth,
+      fromView: fromViewName,
+      list_length: listLength
+    });
+
+    Linking.openURL("https://shn.app.link/rate-story-list");
+  }
+
+  _openWebView(fromViewName, idx, navigate, rowMetadata) {
+    this.props.metrics.track('Story: pressed story', {
+      index: idx,
+      fromView: fromViewName,
+      isUrl: true,
+      data: rowMetadata.forMetrics()
+    });
+
     const title = rowMetadata.title();
     const url = rowMetadata.url();
 
@@ -83,7 +144,7 @@ class App extends React.Component {
     return !rowMetadata.url().startsWith("item?");
   }
 
-  _onStoryCellPress(commentsDataProvider, depth, markReadFn, dataList, idx, updateListFn, navigate, rowMetadata) {
+  _onStoryCellPress(commentsDataProvider, markReadFn, dataList, idx, updateListFn, navigate, rowMetadata) {
     // mark the item as read
     markReadFn(rowMetadata);
 
@@ -91,9 +152,15 @@ class App extends React.Component {
     updateListFn(this._makeNewListByMarkingAsRead(dataList, idx));
 
     if (this._isWebLink(rowMetadata)) {
-      this._openWebView(navigate, rowMetadata);
+      this._openWebView('Story List View', idx, navigate, rowMetadata);
     } else {
-      this._openComments(commentsDataProvider, depth, rowMetadata, navigate, rowMetadata.commentCount());
+      this.props.metrics.track('Story: pressed story', {
+        index: idx,
+        fromView: 'Story List View',
+        isUrl: false,
+        data: rowMetadata.forMetrics()
+      });
+      this._openComments(commentsDataProvider, 1, rowMetadata, navigate, rowMetadata.commentCount());
     }
   }
 
@@ -138,6 +205,17 @@ class App extends React.Component {
     return updatedDataList;
   }
 
+  _onLoadData(fromViewName, depth, isRefresh, timeMs, dataList) {
+    const mappedDataList = dataList.map((item) => item.forMetrics());
+    this.props.metrics.track('Load Data', {
+      fromView: fromViewName,
+      depth: depth,
+      isRefresh: isRefresh,
+      timeMs: timeMs,
+      dataList: mappedDataList
+    });
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     const markReadFn = this._markRead.bind(this);
@@ -152,6 +230,10 @@ class App extends React.Component {
         (navigate, commentCount) => {
           markReadFn(props.data);
           updateListFn(this._makeNewListByMarkingAsRead(currentList, idx));
+          this.props.metrics.track('Story: pressed comments', {
+            index: idx,
+            data: props.data.forMetrics()
+          });
           this._openComments(commentsDataProvider, 1, props.data, navigate, commentCount);
         }
       }
@@ -162,16 +244,20 @@ class App extends React.Component {
       navigate = { navigate }
       dataProviderFn = { storiesDataProvider.fetchData.bind(storiesDataProvider) }
       cellContentViewFactory = { cellContentViewFactory }
-      cellOnPressFn = { this._onStoryCellPress.bind(this, commentsDataProvider, 1, markReadFn) }
-    	/>);
+      cellOnPressFn = { this._onStoryCellPress.bind(this, commentsDataProvider, markReadFn) }
+      onPressRateApp = { this._onPressRateApp.bind(this, 'Story List View', 0) }
+      onLoadData = { this._onLoadData.bind(this, 'Story List View', 0) }
+      onScroll = { () => {} /* doesn't work with PullToRefresh (canRefresh=true) for now */ }
+  	/>);
   }
 }
-
+const metrics = Metrics.makeInitialized();
 const tabNavigator = TabNavigator({
   Ask: {
     screen: ((props) => <App
       navigation = {props.navigation}
       primaryUrl = "http://node-hnapi.herokuapp.com/ask?page=1"
+      metrics = { metrics.bindTab('Ask') }
       />),
     navigationOptions: {
       tabBarLabel: 'Ask',
@@ -184,6 +270,7 @@ const tabNavigator = TabNavigator({
     screen: ((props) => <App
       navigation = {props.navigation}
       primaryUrl = "http://node-hnapi.herokuapp.com/show?page=1"
+      metrics = { metrics.bindTab('Show') }
       />),
     navigationOptions: {
       tabBarLabel: 'Show',
@@ -196,6 +283,7 @@ const tabNavigator = TabNavigator({
     screen: ((props) => <App
       navigation = {props.navigation}
       primaryUrl = "http://node-hnapi.herokuapp.com/news?page=1"
+      metrics = { metrics.bindTab('Top') }
       />),
     navigationOptions: {
       tabBarLabel: 'Top',
@@ -208,6 +296,7 @@ const tabNavigator = TabNavigator({
     screen: ((props) => <App
       navigation = {props.navigation}
       primaryUrl = "http://node-hnapi.herokuapp.com/newest?page=1"
+      metrics = { metrics.bindTab('New') }
       />),
     navigationOptions: {
       tabBarLabel: 'New',
@@ -220,6 +309,7 @@ const tabNavigator = TabNavigator({
     screen: ((props) => <App
       navigation = {props.navigation}
       primaryUrl = "http://node-hnapi.herokuapp.com/jobs?page=1"
+      metrics = { metrics.bindTab('Jobs') }
       />),
     navigationOptions: {
       tabBarLabel: 'Jobs',
@@ -236,9 +326,27 @@ const tabNavigator = TabNavigator({
     labelStyle: { fontSize: tabFontSize }
   }
 });
-
-export default StackNavigator({
+const MyStackNavigator = StackNavigator({
   Home: { screen: tabNavigator },
   Article: { screen: Article },
   Comments: { screen: CommentsView }
 });
+
+const getRouteName = (navigationState) => {
+  const route = navigationState.routes[navigationState.index];
+  const currentPart = route.routeName;
+  if (route.routes) {
+    return getRouteName(route) + "/" + currentPart;
+  }
+  return currentPart;
+};
+const trackNavigation = (prevState, currentState) => {
+  const prevScreen = getRouteName(prevState);
+  const currentScreen = getRouteName(currentState);
+
+  if (prevScreen !== currentScreen) {
+    metrics.trackNavigation(prevScreen, currentScreen);
+  }
+};
+
+export default () => <MyStackNavigator onNavigationStateChange = { trackNavigation }/>;

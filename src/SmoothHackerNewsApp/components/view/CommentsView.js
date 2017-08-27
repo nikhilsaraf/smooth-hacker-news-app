@@ -33,6 +33,9 @@ class CommentsView extends React.Component {
                     dataProviderFn = { params.dataProviderFn }
                     cellContentViewFactory = { params.cellContentViewFactory }
                     cellOnPressFn = { params.cellOnPressFn }
+                    onPressRateApp = { params.onPressRateApp }
+                    onLoadData = { params.onLoadData }
+                    onScroll = { params.onScroll }
                 />
             </View>
         );

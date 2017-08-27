@@ -24,6 +24,18 @@ export default class RowMetadata {
 			isRead);
 	}
 
+	forMetrics() {
+		return {
+			type: 'Story',
+			id: this.id(),
+			title: this.title(),
+			user: this.user(),
+			url: this.url(),
+			score: this.score(),
+			comment_count: this.commentCount()
+		};
+	}
+
 	id() {
 		return this._id;
 	}
