@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { ScrollView, AsyncStorage, Linking } from 'react-native';
+import { ScrollView, AsyncStorage, Linking, Platform } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import Article from './components/view/Article';
 import CommentsView from './components/view/CommentsView';
@@ -262,7 +262,6 @@ const tabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Ask',
       title: "Ask Hacker News",
-      headerTitleStyle: { fontSize: headerTitleFontSize },
       tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="question" color={tintColor} />)
     }
   },
@@ -275,7 +274,6 @@ const tabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Show',
       title: "Show Hacker News",
-      headerTitleStyle: { fontSize: headerTitleFontSize },
       tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="rocket" color={tintColor} />)
     }
   },
@@ -288,7 +286,6 @@ const tabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Top',
       title: "Smooth Hacker News",
-      headerTitleStyle: { fontSize: headerTitleFontSize },
       tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="newspaper-o" color={tintColor} />)
     }
   },
@@ -301,7 +298,6 @@ const tabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'New',
       title: "New Hacker News",
-      headerTitleStyle: { fontSize: headerTitleFontSize },
       tabBarIcon: (({ tintColor }) => <Icon type="foundation" name="burst-new" color={tintColor} />)
     }
   },
@@ -314,22 +310,51 @@ const tabNavigator = TabNavigator({
     navigationOptions: {
       tabBarLabel: 'Jobs',
       title: "Hacker News Jobs",
-      headerTitleStyle: { fontSize: headerTitleFontSize },
       tabBarIcon: (({ tintColor }) => <Icon type="font-awesome" name="briefcase" color={tintColor} />)
     }
   }
 }, {
   initialRouteName: "Top",
   tabBarOptions: {
+    // common options for iOS & Android -- TabBarBottom and TabBarTop
     activeTintColor: '#000',
     inactiveTintColor: '#c1c1c1',
-    labelStyle: { fontSize: tabFontSize }
+    labelStyle: { fontSize: tabFontSize },
+    style: { backgroundColor: "#fff" },
+
+    // additional options for Android -- TabBarTop
+    showIcon: true,
+    upperCaseLabel: false,
+    indicatorStyle: { backgroundColor: "#000" }
   }
 });
+const navigationOptions = {
+  headerTitleStyle: {
+    fontSize: headerTitleFontSize,
+    textAlign: 'center',
+    alignSelf: 'center'
+  }
+};
+const rightPadding = { paddingRight: Platform.OS == 'ios' ? 0 : 40 };
 const MyStackNavigator = StackNavigator({
-  Home: { screen: tabNavigator },
-  Article: { screen: Article },
-  Comments: { screen: CommentsView }
+  Home: {
+    screen: tabNavigator,
+    navigationOptions: navigationOptions
+  },
+  Article: {
+    screen: Article,
+    navigationOptions: Object.assign({}, navigationOptions, rightPadding)
+  },
+  Comments: {
+    screen: CommentsView,
+    navigationOptions: Object.assign({}, navigationOptions, rightPadding)
+  }
+}, {
+  navigationOptions: {
+    headerStyle: {
+      marginTop: Platform.OS == 'ios' ? 0 : 30
+    }
+  }
 });
 
 const getRouteName = (navigationState) => {
