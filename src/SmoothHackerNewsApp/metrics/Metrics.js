@@ -51,24 +51,28 @@ export default class Metrics {
     }
 
     // data is optional
-    async track(eventName, data) {
-        try {
-            Segment.trackWithProperties(eventName, this._timingBlanket(this._userBlanket(data)));
-        } catch (error) {
-            console.log('error while tracking event: ' + error);
-        }
+    track(eventName, data) {
+        return new Promise(() => {
+            try {
+                Segment.trackWithProperties(eventName, this._timingBlanket(this._userBlanket(data)));
+            } catch (error) {
+                console.log('error while tracking event: ' + error);
+            }
+        });
     }
 
     // data is optional
-    async trackNavigation(fromScreenName, toScreenName, data) {
-        try {
-            Segment.trackWithProperties('Navigation', this._timingBlanket(this._userBlanket(this._extend(data, {
-                fromScreen: fromScreenName,
-                toScreen: toScreenName
-            }))));
-        } catch (error) {
-            console.log('error while tracking navigation: ' + error);
-        }
+    trackNavigation(fromScreenName, toScreenName, data) {
+        return new Promise(() => {
+            try {
+                Segment.trackWithProperties('Navigation', this._timingBlanket(this._userBlanket(this._extend(data, {
+                    fromScreen: fromScreenName,
+                    toScreen: toScreenName
+                }))));
+            } catch (error) {
+                console.log('error while tracking navigation: ' + error);
+            }
+        });
     }
 
     static _deviceMetadata() {
