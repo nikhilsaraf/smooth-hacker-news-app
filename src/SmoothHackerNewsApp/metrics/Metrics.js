@@ -27,6 +27,12 @@ export default class Metrics {
         }));
     }
 
+    bindSource(sourceName) {
+        return new Metrics(Object.assign({}, this._deviceMetadata, {
+            sourceName: sourceName
+        }));
+    }
+
     init() {
         try {
             const apiKey = SegmentApiKey.api_key;

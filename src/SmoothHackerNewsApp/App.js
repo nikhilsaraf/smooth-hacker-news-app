@@ -257,7 +257,7 @@ const tabNavigator = TabNavigator({
     screen: ((props) => <App
       navigation = {props.navigation}
       primaryUrl = "http://node-hnapi.herokuapp.com/ask?page=1"
-      metrics = { metrics.bindTab('Ask') }
+      metrics = { metrics.bindTab('Ask').bindSource('hn') }
       />),
     navigationOptions: {
       tabBarLabel: 'Ask',
@@ -269,7 +269,7 @@ const tabNavigator = TabNavigator({
     screen: ((props) => <App
       navigation = {props.navigation}
       primaryUrl = "http://node-hnapi.herokuapp.com/show?page=1"
-      metrics = { metrics.bindTab('Show') }
+      metrics = { metrics.bindTab('Show').bindSource('hn') }
       />),
     navigationOptions: {
       tabBarLabel: 'Show',
@@ -281,7 +281,7 @@ const tabNavigator = TabNavigator({
     screen: ((props) => <App
       navigation = {props.navigation}
       primaryUrl = "http://node-hnapi.herokuapp.com/news?page=1"
-      metrics = { metrics.bindTab('Top') }
+      metrics = { metrics.bindTab('Top').bindSource('hn') }
       />),
     navigationOptions: {
       tabBarLabel: 'Top',
@@ -293,7 +293,7 @@ const tabNavigator = TabNavigator({
     screen: ((props) => <App
       navigation = {props.navigation}
       primaryUrl = "http://node-hnapi.herokuapp.com/newest?page=1"
-      metrics = { metrics.bindTab('New') }
+      metrics = { metrics.bindTab('New').bindSource('hn') }
       />),
     navigationOptions: {
       tabBarLabel: 'New',
@@ -305,7 +305,7 @@ const tabNavigator = TabNavigator({
     screen: ((props) => <App
       navigation = {props.navigation}
       primaryUrl = "http://node-hnapi.herokuapp.com/jobs?page=1"
-      metrics = { metrics.bindTab('Jobs') }
+      metrics = { metrics.bindTab('Jobs').bindSource('hn') }
       />),
     navigationOptions: {
       tabBarLabel: 'Jobs',
