@@ -51,6 +51,7 @@ class ReaderView extends React.Component {
   }
 
   _loadData(isRefresh, onFinishLoading) {
+    this.props.onLoadDataStart(isRefresh);
     const startMs = new Date().getTime();
     // make network request to load data, which will set state
     this.props.dataProviderFn((dataList) => {
@@ -59,7 +60,7 @@ class ReaderView extends React.Component {
         dataList: dataList
       });
       const timeMs = endMs - startMs;
-      this.props.onLoadData(isRefresh, timeMs, dataList);
+      this.props.onLoadDataFinish(isRefresh, timeMs, dataList);
       onFinishLoading();
     });
   }
@@ -122,7 +123,8 @@ ReaderView.propTypes = {
   cellContentViewFactory: PropTypes.func.isRequired,
   cellOnPressFn: PropTypes.func.isRequired,
   onPressRateApp: PropTypes.func.isRequired,
-  onLoadData: PropTypes.func.isRequired,
+  onLoadDataStart: PropTypes.func.isRequired,
+  onLoadDataFinish: PropTypes.func.isRequired,
   onScroll: PropTypes.func.isRequired
 };
 

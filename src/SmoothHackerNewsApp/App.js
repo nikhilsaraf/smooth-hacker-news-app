@@ -106,7 +106,8 @@ class App extends React.Component {
         this._openComments(commentsDataProvider, depth + 1, comment, navigate, comment.children().length);
       }),
       onPressRateApp: this._onPressRateApp.bind(this, 'Comments View', depth),
-      onLoadData: this._onLoadData.bind(this, 'Comments View', depth),
+      onLoadDataStart: this._onLoadDataStart.bind(this, 'Comments View', depth),
+      onLoadDataFinish: this._onLoadDataFinish.bind(this, 'Comments View', depth),
       onScroll: this._onScroll.bind(this, 'Comments View', depth)
     });
   }
@@ -205,14 +206,23 @@ class App extends React.Component {
     return updatedDataList;
   }
 
-  _onLoadData(fromViewName, depth, isRefresh, timeMs, dataList) {
+  _onLoadDataStart(fromViewName, depth, isRefresh) {
+    this.props.metrics.track('Load Data: start', {
+      fromView: fromViewName,
+      depth: depth,
+      isRefresh: isRefresh
+    });
+  }
+
+  _onLoadDataFinish(fromViewName, depth, isRefresh, timeMs, dataList) {
     const mappedDataList = dataList.map((item) => item.forMetrics());
-    this.props.metrics.track('Load Data', {
+    this.props.metrics.track('Load Data: finish', {
       fromView: fromViewName,
       depth: depth,
       isRefresh: isRefresh,
       timeMs: timeMs,
-      dataList: mappedDataList
+      dataList: mappedDataList,
+      dataListSize: dataList.length
     });
   }
 
@@ -246,7 +256,8 @@ class App extends React.Component {
       cellContentViewFactory = { cellContentViewFactory }
       cellOnPressFn = { this._onStoryCellPress.bind(this, commentsDataProvider, markReadFn) }
       onPressRateApp = { this._onPressRateApp.bind(this, 'Story List View', 0) }
-      onLoadData = { this._onLoadData.bind(this, 'Story List View', 0) }
+      onLoadDataStart = { this._onLoadDataStart.bind(this, 'Story List View', 0) }
+      onLoadDataFinish = { this._onLoadDataFinish.bind(this, 'Story List View', 0) }
       onScroll = { () => {} /* doesn't work with PullToRefresh (canRefresh=true) for now */ }
   	/>);
   }
