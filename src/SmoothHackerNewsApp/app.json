@@ -1,5 +1,23 @@
 {
   "expo": {
-    "sdkVersion": "18.0.0"
+    "sdkVersion": "18.0.0",
+    "name": "Smooth Hacker News",
+    "description": "A Smooth Hacker News App that just works",
+    "icon": "./logo/smooth-hacker-news-logo.png",
+    "version": "1.0.0",
+    "sdkVersion": "18.0.0",
+    "slug": "smooth-hacker-news-app",
+    "orientation": "portrait",
+    "ios": {
+        "bundleIdentifier": "com.nikhilsaraf.smooth-hacker-news",
+        "supportsTablet": true
+    },
+    "android": {
+        "package": "com.nikhilsaraf.smooth_hacker_news"
+    },
+    "loading": {
+        "icon": "./logo/smooth-hacker-news-logo.png",
+        "hideExponentText": true
+    }
   }
 }
