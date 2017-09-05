@@ -23,12 +23,14 @@ const tabFontSize = 12;
 
 class App extends React.Component {
 
-  _openCommentLink(navigate, depth, idx, commentMetadata, url) {
-    this.props.metrics.track('Comment: pressed link', {
+  _openContentLink(isStory, navigate, depth, idx, metadata, url) {
+    const eventName = isStory ? 'Story: pressed link' : 'Comment: pressed link';
+    this.props.metrics.track(eventName, {
       url: url,
       index: idx,
       depth: depth,
-      data: commentMetadata.forMetrics()
+      isStory: isStory,
+      data: metadata.forMetrics()
     });
 
     console.log('opening web view for url: ' + url);
@@ -56,26 +58,27 @@ class App extends React.Component {
     const cellContentViewFactory = (props, _1, idx, _2) => <CommentCell
       data = { props.data }
       subscriptFontSize={subscriptFontSize}
-      onLinkPress = { this._openCommentLink.bind(this, navigate, depth, idx) }
+      onLinkPress = { this._openContentLink.bind(this, false, navigate, depth, idx) }
       />;
-    let firstCellView;
+    let firstCellViewFn;
     let firstCellHeight;
     let dataProviderFn;
     if (depth == 1) {
       firstCellHeight = 0.19;
       const onTitlePressFn = this._isWebLink(data) ? this._openWebView.bind(this, 'Comments View', -1, navigate, data) : null;
       // firstCellView for comments should always look like they're unread
-      firstCellView = (<StoryCell
+      firstCellViewFn = (content) => (<StoryCell
         navigate = {navigate}
-        data = { data.withReadStatus(false) }
+        data = { data.withReadStatus(false).withContent(content) }
         textFontSize = {textFontSize}
         subscriptFontSize = {subscriptFontSize}
         cellOnPressFn = { onTitlePressFn }
+        onContentLinkPress = { this._openContentLink.bind(this, true, navigate, depth, -1) }
         />);
       dataProviderFn = commentsDataProvider.fetchData.bind(commentsDataProvider, data.id());
     } else {
       firstCellHeight = 0.25;
-      firstCellView = 
+      firstCellViewFn = () => 
         (<ScrollView
           scrollEventThrottle = {250}
           onScroll = { (event) => this._onScroll('Top Level Comment', depth, event.nativeEvent.contentOffset.y) }
@@ -83,7 +86,7 @@ class App extends React.Component {
           <CommentCell
             data = {data}
             subscriptFontSize = {subscriptFontSize}
-            onLinkPress = { this._openCommentLink.bind(this, navigate, depth, -1) }
+            onLinkPress = { this._openContentLink.bind(this, false, navigate, depth, -1) }
           />
         </ScrollView>);
       dataProviderFn = (callbackFn) => callbackFn(data.children());
@@ -94,7 +97,7 @@ class App extends React.Component {
       headerTitleFontSize: headerTitleFontSize,
       navigate: navigate,
       firstCellHeight: firstCellHeight,
-      firstCellView: firstCellView,
+      firstCellViewFn: firstCellViewFn,
       dataProviderFn: dataProviderFn,
       cellContentViewFactory: cellContentViewFactory,
       cellOnPressFn: ((_1, idx, _2, navigate, comment) => {

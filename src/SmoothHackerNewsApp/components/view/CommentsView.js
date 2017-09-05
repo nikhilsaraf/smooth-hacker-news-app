@@ -26,7 +26,7 @@ class CommentsView extends React.Component {
             onLoadDataStart = { params.onLoadDataStart }
             onLoadDataFinish = { params.onLoadDataFinish }
             onScroll = { params.onScroll }
-            firstCellView = { params.firstCellView }
+            firstCellViewFn = { params.firstCellViewFn }
         />);
     }
 }

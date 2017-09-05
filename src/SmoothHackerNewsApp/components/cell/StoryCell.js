@@ -5,6 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, TouchableOpacity } from 'react-native';
+import HtmlView from 'react-native-htmlview';
 
  class StoryCell extends React.Component {
  	constructor(props) {
@@ -48,6 +49,14 @@ import { View, Text, TouchableOpacity } from 'react-native';
       </TouchableOpacity>);
     const titleComponent = this.props.cellOnPressFn ? touchableTitleText : titleText;
 
+    const optionalContent = !rowMetadata.content() ? null : 
+      (<View style={{ paddingTop: 20 }}>
+        <HtmlView
+          value = {rowMetadata.content()}
+          onLinkPress = { (url) => this.props.onContentLinkPress(rowMetadata, url) }
+        />
+      </View>);
+
  		return (
 	 		<View style={{ paddingTop: 10, paddingBottom: 10, flex: 1, flexDirection: 'column' }}>
 
@@ -71,6 +80,8 @@ import { View, Text, TouchableOpacity } from 'react-native';
           </View>
         </View>
 
+        { optionalContent }
+
       </View>);
  	}
 }
@@ -81,7 +92,8 @@ StoryCell.propTypes = {
   subscriptFontSize: PropTypes.number.isRequired,
   textFontSize: PropTypes.number.isRequired,
   cellOnPressFn: PropTypes.func,
-  openCommentsFn: PropTypes.func
+  openCommentsFn: PropTypes.func,
+  onContentLinkPress: PropTypes.func
 };
 
 export default StoryCell;

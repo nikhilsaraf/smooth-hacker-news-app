@@ -31,7 +31,7 @@ export default class CommentDataProvider {
 			const comments = itemObjects[0]['comments'];
 			const transformedComments = this._transformComments(comments);
 			// finally call the callback here
-			callbackFn(transformedComments);
+			callbackFn(transformedComments, itemObjects[0]['content']);
 		});
 	}
 }

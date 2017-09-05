@@ -11,7 +11,10 @@ import PullToRefresh from 'react-native-pull-to-refresh';
 class ReaderView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { dataList: null };
+    this.state = {
+      dataList: null,
+      firstCellViewTextContent: null
+    };
   }
 
   _makeRow(i, data) {
@@ -54,10 +57,11 @@ class ReaderView extends React.Component {
     this.props.onLoadDataStart(isRefresh);
     const startMs = new Date().getTime();
     // make network request to load data, which will set state
-    this.props.dataProviderFn((dataList) => {
+    this.props.dataProviderFn((dataList, firstCellViewTextContent) => {
       const endMs = new Date().getTime();
       this.setState({
-        dataList: dataList
+        dataList: dataList,
+        firstCellViewTextContent: firstCellViewTextContent
       });
       const timeMs = endMs - startMs;
       this.props.onLoadDataFinish(isRefresh, timeMs, dataList);
@@ -77,7 +81,7 @@ class ReaderView extends React.Component {
     }
 
     let headerView = <View/>;
-    if (this.props.firstCellView) {
+    if (this.props.firstCellViewFn) {
       headerView = (<View style={{
           backgroundColor: '#d8e3ff',
           paddingLeft: 10,
@@ -86,7 +90,7 @@ class ReaderView extends React.Component {
           borderWidth: 1,
           borderColor: '#000'
         }}>
-        {this.props.firstCellView}
+        {this.props.firstCellViewFn(this.state.firstCellViewTextContent)}
         </View>);
     }
 
@@ -141,7 +145,7 @@ ReaderView.propTypes = {
   onLoadDataStart: PropTypes.func.isRequired,
   onLoadDataFinish: PropTypes.func.isRequired,
   onScroll: PropTypes.func.isRequired,
-  firstCellView: PropTypes.object
+  firstCellViewFn: PropTypes.func
 };
 
 export default ReaderView;

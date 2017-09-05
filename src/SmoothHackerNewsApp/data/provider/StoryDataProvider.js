@@ -42,6 +42,7 @@ export default class StoryDataProvider {
 						item['title'],
 						item['user'],
 						item['url'],
+						item['content'],
 						item['points'] ? item['points'] : 0,
 						item['comments_count'] ? item['comments_count'] : 0,
 						null);
