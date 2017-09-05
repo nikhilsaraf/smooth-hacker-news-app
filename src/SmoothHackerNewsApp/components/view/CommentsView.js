@@ -15,31 +15,19 @@ class CommentsView extends React.Component {
 
     render() {
         const { params } = this.props.navigation.state;
-        return (
-            <View style={{ flex: 1, flexDirection: 'column' }}>
-                <View style={{
-                    flex: params.firstCellHeight,
-                    backgroundColor: '#d8e3ff',
-                    paddingLeft: 10,
-                    paddingRight: 10,
-                    paddingTop: 1
-                }}>
-                {params.firstCellView}
-                </View>
-                <ReaderView
-                    style={{ alignItems: 'flex-end' }}
-                    canRefresh = { false }
-                    navigate = { params.navigate }
-                    dataProviderFn = { params.dataProviderFn }
-                    cellContentViewFactory = { params.cellContentViewFactory }
-                    cellOnPressFn = { params.cellOnPressFn }
-                    onPressRateApp = { params.onPressRateApp }
-                    onLoadDataStart = { params.onLoadDataStart }
-                    onLoadDataFinish = { params.onLoadDataFinish }
-                    onScroll = { params.onScroll }
-                />
-            </View>
-        );
+        return (<ReaderView
+            style={{ alignItems: 'flex-end' }}
+            canRefresh = { false }
+            navigate = { params.navigate }
+            dataProviderFn = { params.dataProviderFn }
+            cellContentViewFactory = { params.cellContentViewFactory }
+            cellOnPressFn = { params.cellOnPressFn }
+            onPressRateApp = { params.onPressRateApp }
+            onLoadDataStart = { params.onLoadDataStart }
+            onLoadDataFinish = { params.onLoadDataFinish }
+            onScroll = { params.onScroll }
+            firstCellView = { params.firstCellView }
+        />);
     }
 }
 

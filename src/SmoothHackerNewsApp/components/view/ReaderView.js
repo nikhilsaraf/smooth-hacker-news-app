@@ -76,11 +76,26 @@ class ReaderView extends React.Component {
         style={{ flex: 1 }} />);
     }
 
+    let headerView = <View/>;
+    if (this.props.firstCellView) {
+      headerView = (<View style={{
+          backgroundColor: '#d8e3ff',
+          paddingLeft: 10,
+          paddingRight: 10,
+          paddingTop: 1,
+          borderWidth: 1,
+          borderColor: '#000'
+        }}>
+        {this.props.firstCellView}
+        </View>);
+    }
+
     const rows =
       (<ScrollView
         scrollEventThrottle = {250}
         onScroll = { (event) => this.props.onScroll(event.nativeEvent.contentOffset.y) }
         >
+        { headerView }
         <TableView>
         {this._generateRows(this.state.dataList)}
         </TableView>
@@ -125,7 +140,8 @@ ReaderView.propTypes = {
   onPressRateApp: PropTypes.func.isRequired,
   onLoadDataStart: PropTypes.func.isRequired,
   onLoadDataFinish: PropTypes.func.isRequired,
-  onScroll: PropTypes.func.isRequired
+  onScroll: PropTypes.func.isRequired,
+  firstCellView: PropTypes.object
 };
 
 export default ReaderView;
