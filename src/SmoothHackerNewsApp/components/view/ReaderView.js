@@ -110,7 +110,7 @@ class ReaderView extends React.Component {
             alignItems: 'center'
           }}>
             <Text numberOfLines={1} style={{
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: "500",
               color: "#fff",
               textAlign: "center"

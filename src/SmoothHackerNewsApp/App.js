@@ -16,10 +16,10 @@ import CommentDataProvider from './data/provider/CommentDataProvider';
 import { Icon } from 'react-native-elements';
 import Metrics from './metrics/Metrics';
 
-const subscriptFontSize = 12;
-const textFontSize = 16;
+const subscriptFontSize = 14;
+const textFontSize = 18;
 const headerTitleFontSize = 14;
-const tabFontSize = 12;
+const tabFontSize = 14;
 
 class App extends React.Component {
 
