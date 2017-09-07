@@ -262,6 +262,7 @@ class App extends React.Component {
       onLoadDataStart = { this._onLoadDataStart.bind(this, 'Story List View', 0) }
       onLoadDataFinish = { this._onLoadDataFinish.bind(this, 'Story List View', 0) }
       onScroll = { () => {} /* doesn't work with PullToRefresh (canRefresh=true) for now */ }
+      showRateApp = { true }
   	/>);
   }
 }

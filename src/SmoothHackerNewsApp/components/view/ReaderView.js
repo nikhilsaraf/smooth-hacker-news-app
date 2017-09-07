@@ -24,7 +24,6 @@ class ReaderView extends React.Component {
       });
     };
     const cellOnPressFn = (() => this.props.cellOnPressFn(this.state.dataList, i, updateListFn, this.props.navigate, data));
-    const bgColor = i % 2 == 0 ? '#effaff' : '#f7f7f7';
     const cellContentView = this.props.cellContentViewFactory({
       navigate: this.props.navigate,
       data: data,
@@ -32,12 +31,14 @@ class ReaderView extends React.Component {
     }, this.state.dataList, i, updateListFn);
 
     return (
-      <Cell
-        key = {i}
-        cellContentView={ cellContentView }
-        onPress={ cellOnPressFn }
-        backgroundColor={bgColor}
-      />
+      <View key = {i} style={{ borderWidth: 0.5, borderRadius: 15, borderColor: "#adadad" }}>
+        <Cell
+          style = {{ paddingLeft: 0, paddingRight: 0 }}
+          cellContentView={ cellContentView }
+          onPress={ cellOnPressFn }
+          backgroundColor= '#f7f7f7'
+        />
+      </View>
     );
   }
 
@@ -94,6 +95,24 @@ class ReaderView extends React.Component {
         </View>);
     }
 
+    const rateApp = !this.props.showRateApp ? null :
+      (<View style = {{ backgroundColor: "#1194e0", height: 40 }}>
+        <TouchableOpacity onPress = { () => this.props.onPressRateApp(this.state.dataList.length) } style = {{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Text numberOfLines={1} style={{
+            fontSize: 20,
+            fontWeight: "500",
+            color: "#fff",
+            textAlign: "center"
+          }}>
+          Rate App
+          </Text>
+        </TouchableOpacity>
+      </View>);
+
     const rows =
       (<ScrollView
         scrollEventThrottle = {250}
@@ -103,22 +122,7 @@ class ReaderView extends React.Component {
         <TableView>
         {this._generateRows(this.state.dataList)}
         </TableView>
-        <View style = {{ backgroundColor: "#1194e0", height: 40 }}>
-          <TouchableOpacity onPress = { () => this.props.onPressRateApp(this.state.dataList.length) } style = {{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <Text numberOfLines={1} style={{
-              fontSize: 20,
-              fontWeight: "500",
-              color: "#fff",
-              textAlign: "center"
-            }}>
-            Rate App
-            </Text>
-          </TouchableOpacity>
-        </View>
+        { rateApp }
       </ScrollView>);
 
     if (this.props.canRefresh) {
@@ -145,6 +149,7 @@ ReaderView.propTypes = {
   onLoadDataStart: PropTypes.func.isRequired,
   onLoadDataFinish: PropTypes.func.isRequired,
   onScroll: PropTypes.func.isRequired,
+  showRateApp: PropTypes.bool.isRequired,
   firstCellViewFn: PropTypes.func
 };
 
