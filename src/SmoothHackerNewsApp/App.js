@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { ScrollView, AsyncStorage, Linking, Platform } from 'react-native';
+import { View, StatusBar, ScrollView, AsyncStorage, Linking, Platform } from 'react-native';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 import Article from './components/view/Article';
 import CommentsView from './components/view/CommentsView';
@@ -252,18 +252,22 @@ class App extends React.Component {
       }
       />;
 
-    return (<ReaderView
-      canRefresh = { true }
-      navigate = { navigate }
-      dataProviderFn = { storiesDataProvider.fetchData.bind(storiesDataProvider) }
-      cellContentViewFactory = { cellContentViewFactory }
-      cellOnPressFn = { this._onStoryCellPress.bind(this, commentsDataProvider, markReadFn) }
-      onPressRateApp = { this._onPressRateApp.bind(this, 'Story List View', 0) }
-      onLoadDataStart = { this._onLoadDataStart.bind(this, 'Story List View', 0) }
-      onLoadDataFinish = { this._onLoadDataFinish.bind(this, 'Story List View', 0) }
-      onScroll = { () => {} /* doesn't work with PullToRefresh (canRefresh=true) for now */ }
-      showRateApp = { true }
-  	/>);
+    return (
+      <View style = {{ flex: 1 }}>
+        <StatusBar translucent barStyle = "dark-content"/>
+        <ReaderView
+          canRefresh = { true }
+          navigate = { navigate }
+          dataProviderFn = { storiesDataProvider.fetchData.bind(storiesDataProvider) }
+          cellContentViewFactory = { cellContentViewFactory }
+          cellOnPressFn = { this._onStoryCellPress.bind(this, commentsDataProvider, markReadFn) }
+          onPressRateApp = { this._onPressRateApp.bind(this, 'Story List View', 0) }
+          onLoadDataStart = { this._onLoadDataStart.bind(this, 'Story List View', 0) }
+          onLoadDataFinish = { this._onLoadDataFinish.bind(this, 'Story List View', 0) }
+          onScroll = { () => {} /* doesn't work with PullToRefresh (canRefresh=true) for now */ }
+          showRateApp = { true }
+      	/>
+      </View>);
   }
 }
 const metrics = Metrics.makeInitialized();
