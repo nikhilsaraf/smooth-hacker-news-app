@@ -15,6 +15,7 @@ import StoryDataProvider from './data/provider/StoryDataProvider';
 import CommentDataProvider from './data/provider/CommentDataProvider';
 import { Icon } from 'react-native-elements';
 import Metrics from './metrics/Metrics';
+import Communications from 'react-native-communications';
 
 const subscriptFontSize = 14;
 const textFontSize = 18;
@@ -72,6 +73,7 @@ class App extends React.Component {
         data = { data.withReadStatus(false).withContent(content) }
         textFontSize = {textFontSize}
         subscriptFontSize = {subscriptFontSize}
+        onShare = { this._share.bind(this, 'Comments View', -1, data, this._isWebLink(data)) }
         cellOnPressFn = { onTitlePressFn }
         onContentLinkPress = { this._openContentLink.bind(this, true, navigate, depth, -1) }
         />);
@@ -229,6 +231,37 @@ class App extends React.Component {
     });
   }
 
+  _share(fromViewName, idx, rowMetadata, isWebLink) {
+    this.props.metrics.track('Share', {
+      fromView: fromViewName,
+      index: idx,
+      data: rowMetadata.forMetrics(),
+      channel: 'email'
+    });
+
+    const urlText = !isWebLink ? "" :
+      'Link to article:' + '\n' +
+      rowMetadata.url() + '\n' +
+      '\n';
+    const body =
+      'Check out this article:' + '\n' +
+      rowMetadata.title() + '\n' +
+      '\n' +
+      urlText +
+      'Link to Hacker News Post:' + '\n' +
+      'https://news.ycombinator.com/item?id=' + rowMetadata.id() + '\n' +
+      '\n' +
+      'Shared via the Smooth Hacker News App:' + '\n' +
+      'https://shn.app.link/email';
+      
+    Communications.email(
+      null,
+      null,
+      null,
+      'SHN: ' + rowMetadata.title(),
+      body);
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     const markReadFn = this._markRead.bind(this);
@@ -239,6 +272,7 @@ class App extends React.Component {
       {...props}
       textFontSize = {textFontSize}
       subscriptFontSize = {subscriptFontSize}
+      onShare = { this._share.bind(this, 'Story List View', idx, props.data, this._isWebLink(props.data)) }
       openCommentsFn = {
         (navigate, commentCount) => {
           markReadFn(props.data);

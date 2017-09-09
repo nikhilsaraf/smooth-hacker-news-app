@@ -32,7 +32,7 @@ import HtmlView from 'react-native-htmlview';
 
     const byUserComponent = rowMetadata.user() == null ? null :
       (<Text
-        style={{ fontSize: this.props.subscriptFontSize, color: fontColor, paddingLeft: 4, alignItems: 'flex-end' }}
+        style={{ fontSize: this.props.subscriptFontSize, color: fontColor, alignItems: 'flex-end' }}
         allowFontScaling
         numberOfLines={1}
       >
@@ -58,25 +58,39 @@ import HtmlView from 'react-native-htmlview';
       </View>);
 
  		return (
-	 		<View style={{ paddingTop: 10, paddingBottom: 10, flex: 1, flexDirection: 'column' }}>
+	 		<View style={{ flex: 1, paddingTop: 10, paddingBottom: 10, flexDirection: 'column' }}>
 
         <View style={{ flex: 1, paddingBottom: 8 }}>
       	{titleComponent}
         </View>
 
-        <View style={{ flexDirection: 'row' }}>
-          <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
-            <Text
-              style={{ fontSize: this.props.subscriptFontSize, color: fontColor, alignItems: 'flex-start' }}
-              allowFontScaling
-              numberOfLines={1}
-            >
-            {rowMetadata.score() + " points"}
-            </Text>
-            { byUserComponent }
-          </View>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <Text
+            style={{ flex: 1, fontSize: this.props.subscriptFontSize, color: fontColor, alignItems: 'flex-start' }}
+            allowFontScaling
+            numberOfLines={1}
+          >
+          {rowMetadata.score() + " points"}
+          </Text>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
           {comments}
+          </View>
+        </View>
+
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <View style={{ flex: 1, alignItems: 'flex-start' }}>
+          { byUserComponent }
+          </View>
+          <View style={{ flex: 1, alignItems: 'flex-end' }}>
+            <TouchableOpacity onPress={ () => this.props.onShare() }>
+              <Text
+                style={{ fontSize: this.props.subscriptFontSize, color: fontColor, alignItems: 'flex-start' }}
+                allowFontScaling
+                numberOfLines={1}
+              >
+              Share
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -91,6 +105,7 @@ StoryCell.propTypes = {
 	data: PropTypes.object.isRequired,
   subscriptFontSize: PropTypes.number.isRequired,
   textFontSize: PropTypes.number.isRequired,
+  onShare: PropTypes.func.isRequired,
   cellOnPressFn: PropTypes.func,
   openCommentsFn: PropTypes.func,
   onContentLinkPress: PropTypes.func
