@@ -375,8 +375,10 @@ const tabNavigator = TabNavigator({
     labelStyle: { fontSize: tabFontSize },
     style: { backgroundColor: "#fff" },
 
+    // platform-specific params
+    showIcon: Platform.OS == 'ios', // only show icon for ios
+
     // additional options for Android -- TabBarTop
-    showIcon: true,
     upperCaseLabel: false,
     indicatorStyle: { backgroundColor: "#000" }
   }
