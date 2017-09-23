@@ -40,7 +40,7 @@ import HtmlView from 'react-native-htmlview';
       </Text>);
     
     const titleText =
-      (<Text style={{ fontSize: this.props.textFontSize, color: fontColor }} allowFontScaling>
+      (<Text style={{ fontSize: this.props.titleFontSize, color: fontColor }} allowFontScaling>
       {rowMetadata.title()}
       </Text>);
     const touchableTitleText =
@@ -54,6 +54,11 @@ import HtmlView from 'react-native-htmlview';
         <HtmlView
           value = {rowMetadata.content()}
           onLinkPress = { (url) => this.props.onContentLinkPress(rowMetadata, url) }
+          stylesheet = {{
+            p : {
+              fontSize: this.props.textFontSize
+            }
+          }}
         />
       </View>);
 
@@ -104,6 +109,7 @@ StoryCell.propTypes = {
 	navigate: PropTypes.func.isRequired,
 	data: PropTypes.object.isRequired,
   subscriptFontSize: PropTypes.number.isRequired,
+  titleFontSize: PropTypes.number.isRequired,
   textFontSize: PropTypes.number.isRequired,
   onShare: PropTypes.func.isRequired,
   cellOnPressFn: PropTypes.func,

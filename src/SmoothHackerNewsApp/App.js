@@ -18,7 +18,8 @@ import Metrics from './metrics/Metrics';
 import Communications from 'react-native-communications';
 
 const subscriptFontSize = 14;
-const textFontSize = 18;
+const titleFontSize = 18;
+const commentTextFontSize = 16;
 const headerTitleFontSize = 14;
 const tabFontSize = 14;
 
@@ -58,6 +59,7 @@ class App extends React.Component {
 
     const cellContentViewFactory = (props, _1, idx, _2) => <CommentCell
       data = { props.data }
+      textFontSize={commentTextFontSize}
       subscriptFontSize={subscriptFontSize}
       onLinkPress = { this._openContentLink.bind(this, false, navigate, depth, idx) }
       />;
@@ -71,7 +73,8 @@ class App extends React.Component {
       firstCellViewFn = (content) => (<StoryCell
         navigate = {navigate}
         data = { data.withReadStatus(false).withContent(content) }
-        textFontSize = {textFontSize}
+        titleFontSize = {titleFontSize}
+        textFontSize = {commentTextFontSize}
         subscriptFontSize = {subscriptFontSize}
         onShare = { this._share.bind(this, 'Comments View', -1, data, this._isWebLink(data)) }
         cellOnPressFn = { onTitlePressFn }
@@ -87,6 +90,7 @@ class App extends React.Component {
           >
           <CommentCell
             data = {data}
+            textFontSize = {commentTextFontSize}
             subscriptFontSize = {subscriptFontSize}
             onLinkPress = { this._openContentLink.bind(this, false, navigate, depth, -1) }
           />
@@ -270,7 +274,8 @@ class App extends React.Component {
     const commentsDataProvider = new CommentDataProvider(itemDataProvider);
     const cellContentViewFactory = (props, currentList, idx, updateListFn) => <StoryCell
       {...props}
-      textFontSize = {textFontSize}
+      titleFontSize = {titleFontSize}
+      textFontSize = {commentTextFontSize}
       subscriptFontSize = {subscriptFontSize}
       onShare = { this._share.bind(this, 'Story List View', idx, props.data, this._isWebLink(props.data)) }
       openCommentsFn = {

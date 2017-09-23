@@ -21,6 +21,11 @@ import HtmlView from 'react-native-htmlview';
 	              <HtmlView
 	              	value = {commentMetadata.text()}
 	              	onLinkPress = { (url) => this.props.onLinkPress(commentMetadata, url) }
+	              	stylesheet = {{
+	              		p : {
+	              			fontSize: this.props.textFontSize
+	              		}
+	              	}}
               	  />
 	            </View>
 
@@ -48,6 +53,7 @@ import HtmlView from 'react-native-htmlview';
 
 CommentCell.propTypes = {
 	data: PropTypes.object.isRequired,
+	textFontSize: PropTypes.number.isRequired,
 	subscriptFontSize: PropTypes.number.isRequired,
 	onLinkPress: PropTypes.func.isRequired
 };
