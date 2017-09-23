@@ -146,7 +146,8 @@ class App extends React.Component {
     navigate('Article', {
       title: title,
       headerTitleFontSize: headerTitleFontSize,
-      url: url
+      url: url,
+      onShare: this._share.bind(this, 'Article View', idx, rowMetadata, true)
     });
   }
 
