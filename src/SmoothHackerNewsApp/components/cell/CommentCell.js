@@ -15,7 +15,7 @@ import HtmlView from 'react-native-htmlview';
  	render() {
  		const commentMetadata = this.props.data;
  		return (
-	 		<View style={{ paddingTop: 10, paddingBottom: 10, flexDirection: 'column' }}>
+	 		<View style={{ paddingTop: 10, paddingBottom: 10, flex: 1, flexDirection: 'column' }}>
 
 	            <View style={{ paddingBottom: 5, flexDirection: 'row' }}>
 	              <HtmlView
